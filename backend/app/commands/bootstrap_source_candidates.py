@@ -1,7 +1,13 @@
 from sqlalchemy import select
 
 from app.core.database import SessionLocal
-from app.models import Municipality, MunicipalitySourceCoverage, Source, SourceDiscovery
+from app.models import (
+    ConnectorRegistration,
+    Municipality,
+    MunicipalitySourceCoverage,
+    Source,
+    SourceDiscovery,
+)
 from app.sources.candidates import CANDIDATES, DECISIONS
 
 
@@ -17,7 +23,11 @@ def main():
                     organisation=data["organisation"],
                     website_url=data["website_url"],
                     procurement_url=data["procurement_url"],
-                    connector_type="UNASSIGNED",
+                    connector_type=(
+                        data["slug"]
+                        if DECISIONS[data["slug"]] == "LIVE_CONNECTOR_FEASIBLE"
+                        else "UNASSIGNED"
+                    ),
                     status="REVIEW",
                     active=False,
                     priority=5,
@@ -34,6 +44,25 @@ def main():
                         evidence_url=data["procurement_url"],
                         notes=f"{data['why']}. {data['access']}",
                         verification_status=DECISIONS[data["slug"]],
+                    )
+                )
+            if DECISIONS[data["slug"]] == "LIVE_CONNECTOR_FEASIBLE" and not db.scalar(
+                select(ConnectorRegistration).where(ConnectorRegistration.source_id == item.id)
+            ):
+                implementation = {
+                    "ethekwini-municipality": "app.connectors.municipal.ethekwini.EThekwiniConnector",
+                    "eskom-tender-bulletin": "app.connectors.soe.eskom.EskomConnector",
+                }[data["slug"]]
+                db.add(
+                    ConnectorRegistration(
+                        source_id=item.id,
+                        name=data["name"],
+                        slug=data["slug"],
+                        version="1.0.0",
+                        connector_type=data["mechanism"],
+                        capabilities={"documents": True, "updates": True},
+                        status="FIXTURE_VERIFIED",
+                        implementation_reference=implementation,
                     )
                 )
             code = {"ethekwini-municipality": "ETH", "msunduzi-municipality": "KZN225"}.get(
@@ -56,7 +85,9 @@ def main():
                             verification_status="REVIEW",
                             source_mechanism=data["mechanism"],
                             connector_required=True,
-                            connector_implemented=False,
+                            connector_implemented=(
+                                DECISIONS[data["slug"]] == "LIVE_CONNECTOR_FEASIBLE"
+                            ),
                         )
                     )
         db.commit()

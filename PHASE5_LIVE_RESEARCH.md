@@ -17,3 +17,7 @@ No evidence proves that eThekwini, Msunduzi, Eskom, SANRAL or KZN Treasury share
 ## Security/access
 
 CAPTCHA or rate-limit behavior could not be tested because bounded backend TLS failed before HTTP. SANRAL authentication was not bypassed. Msunduzi HTTP document links were not used because Phase 5 requires HTTPS. No live source data was inserted.
+
+## Connector implementation status
+
+Production connector classes now exist for eThekwini and Eskom and use only the common `IngestionEngine`. Both are `FIXTURE_VERIFIED` against source-structure fixtures derived from observed official fields. Backend live execution remains blocked at TLS before HTTP, so neither is `LIVE_VERIFIED` and neither source is activated.
