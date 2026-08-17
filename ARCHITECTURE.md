@@ -37,3 +37,16 @@ Password delivery uses `EmailProvider` with development and SMTP implementations
 `SavedRepository` is the single Android save-state authority. It batches server state for visible tender IDs and changes its `StateFlow` only after save/unsave API confirmation, keeping Home, Search, Saved and Details consistent. Saved resources remain server-side across logout, restart and device changes.
 
 Saved searches use structured backend validation and reconstruct `TenderFilters` in the retained Search ViewModel. Recent keyword history is device-local, capped at ten and never sent to the backend except when the user executes that search.
+
+## Phase 3 event pipeline
+
+```text
+canonical tender insert/update -> deterministic matcher -> notification row
+                                                    -> channel delivery rows
+hourly reminder job --------------------------------^             |
+                                                                  -> Android/API history
+```
+
+Creation and delivery are separate and retry-safe. Unique event keys deduplicate saved-search matches, each deadline window and each source version. Matching is deterministic against canonical fields and database-backed saved-search batches—no AI, vectors or suitability claim. Meaningful update fields exclude checksums and ingestion metadata.
+
+Quiet hours defer PUSH/EMAIL via `available_at`; in-app history remains available. High-priority day-of-closing reminders bypass quiet deferral. The same advisory lock pattern prevents overlapping notification batches.

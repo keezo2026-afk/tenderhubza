@@ -23,3 +23,7 @@ No later product phase should begin until a PostgreSQL 16 environment has produc
 ## Recommended Phase 3 (requires separate authorization)
 
 After Phase 1A live acceptance, focus on saved-tender closing reminders and notification preference infrastructure, production observability, and business-profile completion. Do not begin AI, payments or alerts until separately authorized.
+
+## Recommended Phase 4 (separate authorization required)
+
+Complete real PostgreSQL/FCM/device acceptance first, then consider notification delivery receipts/analytics, richer per-search schedules and production operational tooling. AI, payments and business matching remain out of scope until explicitly authorized.

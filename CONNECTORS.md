@@ -43,3 +43,7 @@ Migration `0003` adds `connector_states`. With no explicit `--date-from`, ingest
 ## Connectivity diagnostics
 
 Run `make diagnose`. It separately measures DNS, TCP and verified TLS negotiation and never disables certificate verification. `connector_request_failed` logs host, category, attempt, error type and HTTP status without query payloads or credentials. Typical categories are `dns`, `tcp_connect`, `timeout`, `certificate_verification`, `tls_negotiation`, `upstream_http`, and `transport`.
+
+## Notification event hook
+
+After an inserted canonical tender is flushed, ingestion evaluates enabled saved searches. After an update/version is flushed, it evaluates only meaningful `change_summary` fields for users who saved the tender. Notification errors participate in the item transaction; deterministic event keys make retries idempotent.

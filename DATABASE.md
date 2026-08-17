@@ -33,3 +33,11 @@ After PostgreSQL migration and geography import, run `make verify-postgres`. The
 
 - `saved_tenders`: server-persisted user/tender association with cascade deletion, indexed `user_id` and `tender_id`, and unique `(user_id, tender_id)`.
 - `saved_searches`: user-owned name, query, structured JSON filters, sort, timestamps, and indexed `user_id`. Structured filter validation mirrors the discovery API and is suitable for future notification matching without implementing notifications now.
+
+## Phase 3 migration (`0006`)
+
+- `notification_preferences`: one per user, channel/event consent, quiet hours and IANA timezone.
+- `notifications`: private user history with type, priority, tender/search links, read state and globally unique deterministic `event_key`.
+- `notification_deliveries`: channel attempts, retry count, availability time, honest `PENDING/SENT/FAILED/SKIPPED` state and provider ID. `SENT` means provider acceptance, never device delivery.
+- `device_tokens`: multiple minimal Android registrations per user; tokens are never returned by an API.
+- `saved_searches.alerts_enabled` and `saved_tenders.closing_reminders_enabled/reminder_days` support per-resource controls.

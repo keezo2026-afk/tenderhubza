@@ -26,3 +26,7 @@ Reviewed on 2026-08-17.
 ## Phase 2 ownership review
 
 Saved-tender and saved-search routes derive ownership solely from the authenticated user dependency. Every read/update/delete query includes `user_id`; another user's existing resource returns the same 404 as a missing resource. Foreign keys cascade intentionally and duplicate saves are database-constrained. Batch saved-state input is limited to 100 tender IDs.
+
+## Phase 3 notification review
+
+Notification/history/preferences/device operations are token-user scoped. Device tokens have no read endpoint and are never logged. Admin monitoring is aggregate-only. Firebase service credentials are backend environment files; Android receives public client configuration only. Push provider acceptance is stored as `SENT`, not falsely as `DELIVERED`. Notification content is omitted from structured operational logs.

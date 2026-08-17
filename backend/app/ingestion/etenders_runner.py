@@ -8,6 +8,7 @@ import structlog
 from app.connectors.national.etenders import ETendersConnector
 from app.ingestion.contracts import NormalizedTender
 from app.models import ConnectorRun,ConnectorState,Province,RawIngestion,Source,Tender,TenderDocument,TenderDuplicateCandidate,TenderSourceVersion
+from app.notifications import NotificationService
 log=structlog.get_logger()
 class ETendersIngestionService:
  def __init__(self,db:Session,connector:ETendersConnector):self.db=db;self.connector=connector
@@ -54,13 +55,17 @@ class ETendersIngestionService:
   if tender and tender.payload_hash==t.payload_hash:return "skipped"
   if tender:
    changes={k:{"from":str(getattr(tender,k)),"to":str(v)} for k,v in values.items() if hasattr(tender,k) and getattr(tender,k)!=v}
+   old_documents=set(self.db.scalars(select(TenderDocument.source_url).where(TenderDocument.tender_id==tender.id)));new_documents={d.url for d in t.documents}
+   if old_documents!=new_documents:changes["documents"]={"from":sorted(old_documents),"to":sorted(new_documents)}
    for k,v in values.items():
     if hasattr(tender,k):setattr(tender,k,v)
    self.db.query(TenderDocument).filter(TenderDocument.tender_id==tender.id).delete();action="updated"
   else:
    tender=Tender(source_id=source.id,**values);self.db.add(tender);self.db.flush();changes={"created":True};action="inserted"
   for doc in t.documents:self.db.add(TenderDocument(tender_id=tender.id,name=doc.name,source_url=doc.url,mime_type=doc.media_type))
-  self.db.add(TenderSourceVersion(tender_id=tender.id,raw_ingestion_id=raw.id,change_summary=changes))
+  version=TenderSourceVersion(tender_id=tender.id,raw_ingestion_id=raw.id,change_summary=changes);self.db.add(version);self.db.flush();notifications=NotificationService(self.db)
+  if action=="inserted":notifications.match_new_tender(tender)
+  elif action=="updated":notifications.notify_update(tender,version.id,changes)
   if action=="inserted" and tender.reference_number:
    candidate=self.db.scalar(select(Tender).where(Tender.source_id!=source.id,Tender.reference_number==tender.reference_number,Tender.organisation==tender.organisation).limit(1))
    if candidate:self.db.add(TenderDuplicateCandidate(tender_id=tender.id,candidate_tender_id=candidate.id,reason="same reference number and organisation across sources"))

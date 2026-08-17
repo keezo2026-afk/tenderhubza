@@ -32,3 +32,9 @@ Phase 1A adds incremental watermarks, non-overlapping scheduling, network diagno
 Authenticated users can save/unsave real tenders, browse paginated saved tenders, create/run/rename/delete saved searches, retain a search session, keep ten local recent searches, and edit their profile. Home/Search/Details share confirmed server save state. No fake production tender records are introduced.
 
 **Phase 1A Live Acceptance: BLOCKED** — the documented National Treasury TLS and environment gate remains unresolved.
+
+## Phase 3 notifications
+
+TenderHub now creates idempotent in-app notifications for deterministic saved-search matches, saved-tender deadline windows and meaningful saved-tender amendments. Users control event types, channels, quiet hours, saved-search alerts and individual tender reminders. Push registration and Firebase provider architecture are present, but production push delivery is **NOT VERIFIED** without an Android/device/provider acceptance test.
+
+**Phase 1A Live Acceptance: BLOCKED.**

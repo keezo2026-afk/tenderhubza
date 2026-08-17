@@ -26,5 +26,14 @@ interface TenderHubApi {
  @DELETE("searches/{id}") suspend fun deleteSearch(@Path("id") id:String)
  @GET("users/me/profile") suspend fun profile():Profile
  @PUT("users/me/profile") suspend fun updateProfile(@Body body:ProfileUpdate):Profile
+ @GET("notifications") suspend fun notifications(@Query("page") page:Int=1,@Query("page_size") pageSize:Int=20):Page<TenderNotification>
+ @GET("notifications/unread-count") suspend fun unreadCount():UnreadCount
+ @POST("notifications/{id}/read") suspend fun readNotification(@Path("id") id:String):TenderNotification
+ @POST("notifications/read-all") suspend fun readAllNotifications()
+ @GET("users/me/notification-preferences") suspend fun notificationPreferences():NotificationPreference
+ @PUT("users/me/notification-preferences") suspend fun updateNotificationPreferences(@Body body:NotificationPreferenceInput):NotificationPreference
+ @POST("devices/push-token") suspend fun registerPushToken(@Body body:PushTokenInput)
+ @HTTP(method="DELETE",path="devices/push-token",hasBody=true) suspend fun unregisterPushToken(@Body body:PushTokenDelete)
+ @PUT("tenders/{id}/reminders") suspend fun setTenderReminders(@Path("id") id:String,@Body body:ReminderInput):ReminderState
 }
 interface RefreshApi {@POST("auth/refresh") fun refresh(@Body body:RefreshRequest):Call<TokenResponse>}

@@ -39,11 +39,11 @@ class ConnectorRunOut(BaseModel):
 class SavedTenderItem(BaseModel):
     saved_at:datetime;tender:TenderCard
 class TenderIdsRequest(BaseModel):tender_ids:list[str]=Field(min_length=1,max_length=100)
-class TenderSavedState(BaseModel):tender_id:str;saved:bool
+class TenderSavedState(BaseModel):tender_id:str;saved:bool;closing_reminders_enabled:bool|None=None;reminder_days:list[int]|None=None
 class SavedSearchFilters(BaseModel):
     provinceId:str|None=None;districtId:str|None=None;municipalityId:str|None=None;category:str="";tenderType:str="";organisation:str="";closingFrom:str="";closingTo:str="";issueFrom:str="";issueTo:str="";minValue:str="";maxValue:str="";status:str=""
 class SavedSearchInput(BaseModel):
-    name:str=Field(min_length=1,max_length=120);query:str=Field(default="",max_length=200);filters:SavedSearchFilters=Field(default_factory=SavedSearchFilters);sort:str=Field(default="relevance",pattern="^(relevance|newest|closing_soon)$")
+    name:str=Field(min_length=1,max_length=120);query:str=Field(default="",max_length=200);filters:SavedSearchFilters=Field(default_factory=SavedSearchFilters);sort:str=Field(default="relevance",pattern="^(relevance|newest|closing_soon)$");alerts_enabled:bool=True
 class SavedSearchOut(SavedSearchInput):
     model_config=ConfigDict(from_attributes=True)
     id:str;created_at:datetime;updated_at:datetime
@@ -51,3 +51,16 @@ class ProfileOut(BaseModel):
     id:str;email:str;first_name:str;last_name:str;phone:str|None;display_name:str|None;province:str|None;city:str|None
 class ProfileUpdate(BaseModel):
     first_name:str=Field(min_length=1,max_length=100);last_name:str=Field(min_length=1,max_length=100);phone:str|None=Field(default=None,max_length=30);province:str|None=Field(default=None,max_length=100);city:str|None=Field(default=None,max_length=100)
+class NotificationPreferenceInput(BaseModel):
+    new_tender_matches_enabled:bool=True;saved_tender_closing_enabled:bool=True;tender_update_enabled:bool=True;email_enabled:bool=False;push_enabled:bool=False;in_app_enabled:bool=True;quiet_hours_enabled:bool=True;quiet_hours_start:time=time(22,0);quiet_hours_end:time=time(7,0);timezone:str=Field(default="Africa/Johannesburg",max_length=64)
+class NotificationPreferenceOut(NotificationPreferenceInput):
+    model_config=ConfigDict(from_attributes=True)
+    id:str;updated_at:datetime
+class NotificationOut(BaseModel):
+    model_config=ConfigDict(from_attributes=True)
+    id:str;type:str;title:str;body:str;tender_id:str|None;saved_search_id:str|None;priority:str;read_at:datetime|None;created_at:datetime;expires_at:datetime|None
+class UnreadCount(BaseModel):count:int
+class PushTokenInput(BaseModel):token:str=Field(min_length=20,max_length=4096);platform:str=Field(default="ANDROID",pattern="^ANDROID$");app_version:str|None=Field(default=None,max_length=50);device_identifier:str|None=Field(default=None,max_length=255)
+class PushTokenDelete(BaseModel):token:str=Field(min_length=20,max_length=4096)
+class SavedTenderReminderInput(BaseModel):enabled:bool;reminder_days:list[int]=Field(default=[7,3,1,0],max_length=4)
+class SavedTenderReminderOut(SavedTenderReminderInput):tender_id:str

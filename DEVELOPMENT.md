@@ -60,3 +60,13 @@ Expected APK: `android/app/build/outputs/apk/debug/app-debug.apk`.
 Migration `0004` creates saved tenders/searches. Backend tests exercise duplicate save, unsave, pagination, unauthenticated access, cross-user isolation, saved-search CRUD and profile updates.
 
 Android tests for saved rendering, empty state, filters and local history are under `androidTest`/`test`. JDK/SDK availability is still required to execute them and build the APK.
+
+## Notification jobs
+
+```bash
+make notifications                 # one closing/delivery batch
+# or set NOTIFICATION_SCHEDULE_ENABLED=true
+make schedule-notifications        # graceful hourly scheduler
+```
+
+Development push/email providers mark delivery `SKIPPED`; they never claim delivery. For production push, set `PUSH_PROVIDER=firebase` and inject `FIREBASE_CREDENTIALS_FILE` on the backend. Android accepts only public Firebase client properties (`FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_SENDER_ID`) through user Gradle properties. No server credential belongs in Android.

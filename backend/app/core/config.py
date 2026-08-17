@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     smtp_password: str | None = None
     smtp_from_email: str | None = None
     smtp_starttls: bool = True
+    notification_schedule_enabled: bool = False
+    notification_schedule_interval_minutes: int = 60
+    push_provider: str = "development"
+    firebase_credentials_file: str | None = None
     mail_adapter: str = "development"
     cors_origins: str = "http://localhost:3000"
     log_level: str = "INFO"

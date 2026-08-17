@@ -1,0 +1,4 @@
+package za.co.tenderhub.data.repository
+import za.co.tenderhub.data.remote.TenderHubApi
+import za.co.tenderhub.domain.model.*
+class NotificationRepository(private val api:TenderHubApi){suspend fun list(page:Int=1)=apiCall{api.notifications(page)};suspend fun unread()=apiCall{api.unreadCount().count};suspend fun read(id:String)=apiCall{api.readNotification(id)};suspend fun readAll()=apiCall{api.readAllNotifications()};suspend fun preferences()=apiCall{api.notificationPreferences()};suspend fun update(value:NotificationPreferenceInput)=apiCall{api.updateNotificationPreferences(value)};suspend fun register(token:String,version:String?)=apiCall{api.registerPushToken(PushTokenInput(token,app_version=version))};suspend fun unregister(token:String)=apiCall{api.unregisterPushToken(PushTokenDelete(token))};suspend fun reminders(id:String,enabled:Boolean)=apiCall{api.setTenderReminders(id,ReminderInput(enabled))}}

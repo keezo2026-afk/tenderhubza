@@ -71,3 +71,15 @@ Profile:
 - `PUT /users/me/profile`
 
 All ownership comes from the access token. Client-supplied user IDs are never accepted. Duplicate saves are idempotent and database-constrained.
+
+## Phase 3 notifications
+
+Authenticated endpoints:
+
+- `GET|PUT /users/me/notification-preferences`
+- `GET /notifications`, `GET /notifications/unread-count`
+- `POST /notifications/{id}/read`, `POST /notifications/read-all`
+- `POST|DELETE /devices/push-token`
+- `PUT /tenders/{id}/reminders`
+
+Notification and preference queries are always scoped to the access-token user. There is intentionally no device-token listing endpoint. Admin data quality exposes only aggregate notification/delivery counts.
