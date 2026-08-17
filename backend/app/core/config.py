@@ -1,6 +1,8 @@
 from functools import lru_cache
-from pydantic import Field
+
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     app_name: str = "TenderHub SA API"
@@ -10,6 +12,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 30
     password_reset_expire_minutes: int = 30
+    expose_development_reset_token: bool = False
     auth_rate_limit_per_minute: int = 10
     connector_timeout_seconds: float = 30
     connector_max_attempts: int = 3
@@ -27,12 +30,20 @@ class Settings(BaseSettings):
     smtp_starttls: bool = True
     notification_schedule_enabled: bool = False
     notification_schedule_interval_minutes: int = 60
+    notification_read_retention_days: int = Field(default=90, ge=1, le=3650)
     push_provider: str = "development"
     firebase_credentials_file: str | None = None
     mail_adapter: str = "development"
     cors_origins: str = "http://localhost:3000"
     log_level: str = "INFO"
     model_config = SettingsConfigDict(env_file="../.env", extra="ignore")
+
+    @model_validator(mode="after")
+    def protect_development_secrets(self):
+        if self.environment != "development" and self.expose_development_reset_token:
+            raise ValueError("development reset tokens cannot be exposed outside development")
+        return self
+
 
 @lru_cache
 def get_settings() -> Settings:

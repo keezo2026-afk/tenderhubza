@@ -27,3 +27,7 @@ After Phase 1A live acceptance, focus on saved-tender closing reminders and noti
 ## Recommended Phase 4 (separate authorization required)
 
 Complete real PostgreSQL/FCM/device acceptance first, then consider notification delivery receipts/analytics, richer per-search schedules and production operational tooling. AI, payments and business matching remain out of scope until explicitly authorized.
+
+## Phase 3.5 gate
+
+Phase 4 source expansion is not ready for authorization until PostgreSQL 16 migration/query validation, Android compilation/lifecycle tests, CI and Phase 1A live acceptance execute successfully. Architecture-level connector expansion prerequisites are now present, but external acceptance remains blocked.

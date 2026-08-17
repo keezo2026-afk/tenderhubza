@@ -38,3 +38,7 @@ Authenticated users can save/unsave real tenders, browse paginated saved tenders
 TenderHub now creates idempotent in-app notifications for deterministic saved-search matches, saved-tender deadline windows and meaningful saved-tender amendments. Users control event types, channels, quiet hours, saved-search alerts and individual tender reminders. Push registration and Firebase provider architecture are present, but production push delivery is **NOT VERIFIED** without an Android/device/provider acceptance test.
 
 **Phase 1A Live Acceptance: BLOCKED.**
+
+## Phase 3.5 architecture hardening
+
+Ingestion is connector-neutral, geography resolution is canonical/audited, notification push state is per device, FCM payloads are data-only, read-notification retention is scheduled, saved-search candidates are database-narrowed, and models are split by domain. No Phase 4 connectors or product features were added.

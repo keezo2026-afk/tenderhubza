@@ -1,1 +1,1 @@
-from app.notifications.service import NotificationService
+from app.notifications.service import NotificationService as NotificationService

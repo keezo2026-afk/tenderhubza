@@ -38,6 +38,10 @@ After PostgreSQL migration and geography import, run `make verify-postgres`. The
 
 - `notification_preferences`: one per user, channel/event consent, quiet hours and IANA timezone.
 - `notifications`: private user history with type, priority, tender/search links, read state and globally unique deterministic `event_key`.
-- `notification_deliveries`: channel attempts, retry count, availability time, honest `PENDING/SENT/FAILED/SKIPPED` state and provider ID. `SENT` means provider acceptance, never device delivery.
+- `notification_deliveries`: channel attempts, retry count, availability time, honest `PENDING/SUBMITTED/DELIVERED/FAILED/SKIPPED` state and provider ID. `SUBMITTED` means provider acceptance; `DELIVERED` is reserved for a real receipt.
 - `device_tokens`: multiple minimal Android registrations per user; tokens are never returned by an API.
 - `saved_searches.alerts_enabled` and `saved_tenders.closing_reminders_enabled/reminder_days` support per-resource controls.
+
+## Phase 3.5 migration (`0007`)
+
+This first explicit-policy migration adds geography-resolution audit records, per-device notification deliveries, duplicate-candidate confidence/method/signals, and a PostgreSQL GIN index for saved-search filter candidate narrowing. It converts provider-accepted parent delivery state from `SENT` to `SUBMITTED`. Historical `create_all` coupling is documented in [MIGRATIONS.md](MIGRATIONS.md); all future revisions must use explicit Alembic operations.

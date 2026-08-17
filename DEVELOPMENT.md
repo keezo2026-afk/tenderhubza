@@ -70,3 +70,16 @@ make schedule-notifications        # graceful hourly scheduler
 ```
 
 Development push/email providers mark delivery `SKIPPED`; they never claim delivery. For production push, set `PUSH_PROVIDER=firebase` and inject `FIREBASE_CREDENTIALS_FILE` on the backend. Android accepts only public Firebase client properties (`FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_SENDER_ID`) through user Gradle properties. No server credential belongs in Android.
+
+## Formatting and hardening validation
+
+```bash
+cd backend
+../.venv/bin/ruff format --check app tests
+../.venv/bin/ruff check app tests
+../.venv/bin/pytest
+```
+
+Phase 3.5 validates both an empty SQLite upgrade and a simulated existing `0006 -> 0007` upgrade. These checks do not validate PostgreSQL GIN/JSON behavior. Configure `NOTIFICATION_READ_RETENTION_DAYS` for the scheduled read-notification cleanup; unread notifications are never removed by retention.
+
+Android push lifecycle tests in `PushLifecycleDeepLinkTest` cover data-payload routing contracts for foreground, background and terminated startup. They are **CREATED BUT NOT EXECUTED** in this environment because JDK/Android SDK/device tooling is unavailable; only a real device/emulator can prove lifecycle delivery.

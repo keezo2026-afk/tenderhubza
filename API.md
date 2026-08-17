@@ -45,7 +45,7 @@ Admin bearer token required:
 - `GET /districts?province_id=` provides backend-owned district reference data.
 - `GET /admin/data-quality` reports source health, tender ingestion windows, 30-day processing totals, duplicate candidates and discovered documents.
 
-Password-reset requests always return the same generic message. In development only, the development adapter can return the one-time token to support local Android testing. `MAIL_ADAPTER=smtp` uses environment-configured SMTP behind `EmailProvider`; auth business logic has no vendor dependency.
+Password-reset requests always return the same generic message. Only in `ENVIRONMENT=development`, with the development adapter and explicit `EXPOSE_DEVELOPMENT_RESET_TOKEN=true`, can the one-time token be returned for local Android testing. Configuration rejects that flag in production. `MAIL_ADAPTER=smtp` uses environment-configured SMTP behind `EmailProvider`; auth business logic has no vendor dependency.
 
 ## Phase 2 personal discovery
 
@@ -83,3 +83,7 @@ Authenticated endpoints:
 - `PUT /tenders/{id}/reminders`
 
 Notification and preference queries are always scoped to the access-token user. There is intentionally no device-token listing endpoint. Admin data quality exposes only aggregate notification/delivery counts.
+
+## Phase 3.5 delivery semantics
+
+Push channel delivery is expanded into `notification_device_deliveries`. Each device independently transitions through `PENDING`, `SUBMITTED`, `FAILED` or `SKIPPED`; `DELIVERED` is reserved for a future provider receipt. Permanently invalid tokens are deactivated. Retrying a parent delivery skips devices already submitted.

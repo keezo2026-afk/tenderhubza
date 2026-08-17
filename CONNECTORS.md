@@ -47,3 +47,7 @@ Run `make diagnose`. It separately measures DNS, TCP and verified TLS negotiatio
 ## Notification event hook
 
 After an inserted canonical tender is flushed, ingestion evaluates enabled saved searches. After an update/version is flushed, it evaluates only meaningful `change_summary` fields for users who saved the tender. Notification errors participate in the item transaction; deterministic event keys make retries idempotent.
+
+## Hardened connector contract
+
+`TenderConnector` declares capabilities for incremental sync, documents, updates, pagination, date filters, API, HTML and PDF sources. A default health-check boundary is available. Connectors remain responsible only for discovery/fetch/parse/normalize/document metadata; `IngestionEngine` owns persistence and policy. National Treasury declares API, pagination, date-filtering, incremental, update and document capabilities.

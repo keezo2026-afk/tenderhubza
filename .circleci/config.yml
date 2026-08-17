@@ -14,10 +14,11 @@ jobs:
       ENVIRONMENT: test
     steps:
       - checkout
-      - restore_cache: {keys: ["pip-v1-{{ checksum \"backend/requirements.txt\" }}"]}
-      - run: python -m venv .venv && .venv/bin/pip install -r backend/requirements.txt
-      - save_cache: {key: "pip-v1-{{ checksum \"backend/requirements.txt\" }}", paths: ["~/.cache/pip"]}
+      - restore_cache: {keys: ["pip-v2-{{ checksum \"backend/requirements-dev.txt\" }}"]}
+      - run: python -m venv .venv && .venv/bin/pip install -r backend/requirements-dev.txt
+      - save_cache: {key: "pip-v2-{{ checksum \"backend/requirements-dev.txt\" }}", paths: ["~/.cache/pip"]}
       - run: .venv/bin/python -m compileall -q backend/app
+      - run: {name: Python format and lint, command: cd backend && ../.venv/bin/ruff format --check app tests && ../.venv/bin/ruff check app tests}
       - run:
           name: Wait for PostgreSQL
           command: |

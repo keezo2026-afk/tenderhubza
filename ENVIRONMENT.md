@@ -24,3 +24,5 @@ Production must inject all credentials through a secret manager, use database an
 Phase 1A connector settings include `ETENDERS_INITIAL_SYNC_DAYS`, `ETENDERS_OVERLAP_DAYS`, `CONNECTOR_SCHEDULE_ENABLED`, and `CONNECTOR_SCHEDULE_INTERVAL_MINUTES`. Password delivery uses `PUBLIC_APP_URL`; production SMTP uses `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL`, and `SMTP_STARTTLS`. SMTP credentials are environment-only and must not be committed.
 
 Phase 3 adds `NOTIFICATION_SCHEDULE_ENABLED`, `NOTIFICATION_SCHEDULE_INTERVAL_MINUTES`, `PUSH_PROVIDER`, and `FIREBASE_CREDENTIALS_FILE`. The Firebase credential file is a backend secret and must never be committed. Android Firebase Gradle properties are public client configuration only.
+
+Phase 3.5 adds `EXPOSE_DEVELOPMENT_RESET_TOKEN` (default `false`) and `NOTIFICATION_READ_RETENTION_DAYS` (default `90`). Configuration validation refuses development-token exposure outside `ENVIRONMENT=development`.

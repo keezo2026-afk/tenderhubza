@@ -1,4 +1,4 @@
-.PHONY: setup db migrate geography ingest diagnose schedule notifications schedule-notifications verify-postgres api test android-test
+.PHONY: setup db migrate geography ingest diagnose schedule notifications schedule-notifications verify-postgres api lint test android-test
 setup:
 	python3 -m venv .venv && .venv/bin/pip install -r backend/requirements.txt
 db:
@@ -21,6 +21,8 @@ verify-postgres:
 	cd backend && ../.venv/bin/python -m app.commands.verify_postgres
 api:
 	cd backend && ../.venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+lint:
+	cd backend && ../.venv/bin/ruff format --check app tests && ../.venv/bin/ruff check app tests
 test:
 	cd backend && ../.venv/bin/pytest
 android-test:

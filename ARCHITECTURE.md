@@ -50,3 +50,13 @@ hourly reminder job --------------------------------^             |
 Creation and delivery are separate and retry-safe. Unique event keys deduplicate saved-search matches, each deadline window and each source version. Matching is deterministic against canonical fields and database-backed saved-search batches—no AI, vectors or suitability claim. Meaningful update fields exclude checksums and ingestion metadata.
 
 Quiet hours defer PUSH/EMAIL via `available_at`; in-app history remains available. High-priority day-of-closing reminders bypass quiet deferral. The same advisory lock pattern prevents overlapping notification batches.
+
+## Phase 3.5 hardening
+
+All connectors now feed the generic `IngestionEngine`; raw durability, validation, canonical identity, geography resolution, idempotency, versions, documents, duplicate candidates, indexing hooks, notifications and run accounting no longer live in the eTender adapter. `IngestionCoordinator` isolates connector-level failures while the engine isolates item failures.
+
+`GeographyResolver` performs code, exact, normalized and alias matching, validates province/district/municipality relationships and records unresolved/conflicting source values. It never guesses an ambiguous municipality.
+
+Push is data-only: Firebase sends title/body/type/IDs as data, `FirebaseMessagingService` always owns notification construction, and one deep-link path is used for foreground, background and terminated process startup. Delivery tracking is per device. Provider acceptance is `SUBMITTED`; `DELIVERED` is reserved for an external receipt.
+
+SQLAlchemy models are split into `users`, `auth`, `geography`, `sources`, `tenders`, `ingestion`, `saved`, and `notifications`; compatibility exports preserve existing imports and table identity. See [TENDER_IDENTITY.md](TENDER_IDENTITY.md) and [MIGRATIONS.md](MIGRATIONS.md).

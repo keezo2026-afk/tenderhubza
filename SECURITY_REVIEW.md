@@ -29,4 +29,8 @@ Saved-tender and saved-search routes derive ownership solely from the authentica
 
 ## Phase 3 notification review
 
-Notification/history/preferences/device operations are token-user scoped. Device tokens have no read endpoint and are never logged. Admin monitoring is aggregate-only. Firebase service credentials are backend environment files; Android receives public client configuration only. Push provider acceptance is stored as `SENT`, not falsely as `DELIVERED`. Notification content is omitted from structured operational logs.
+Notification/history/preferences/device operations are token-user scoped. Device tokens have no read endpoint and are never logged. Admin monitoring is aggregate-only. Firebase service credentials are backend environment files; Android receives public client configuration only. Push provider acceptance is stored as `SUBMITTED`, not falsely as `DELIVERED`. Per-device state prevents successful devices from being resent when another device fails. Notification content and device tokens are omitted from structured operational logs.
+
+## Phase 3.5 findings
+
+Production configuration cannot enable reset-token response exposure. Reset tokens/URLs are not logged. Permanently invalid FCM tokens are deactivated without logging token values. Data-only push content is routed through one application-owned notification builder. Retention removes only read records and runs only as an explicit scheduled job.
