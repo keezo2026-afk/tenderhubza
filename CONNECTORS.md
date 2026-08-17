@@ -51,3 +51,7 @@ After an inserted canonical tender is flushed, ingestion evaluates enabled saved
 ## Hardened connector contract
 
 `TenderConnector` declares capabilities for incremental sync, documents, updates, pagination, date filters, API, HTML and PDF sources. A default health-check boundary is available. Connectors remain responsible only for discovery/fetch/parse/normalize/document metadata; `IngestionEngine` owns persistence and policy. National Treasury declares API, pagination, date-filtering, incremental, update and document capabilities.
+
+## Phase 4 registration and health
+
+A connector implementation is server-registered with version, type, capabilities and implementation reference. Source lifecycle is DISCOVERED → REVIEW → APPROVED → ACTIVE, with PAUSED/FAILING/BLOCKED/RETIRED operational states. Failure categories and stale thresholds are standardized. `ConnectorContractHarness` exercises discover/fetch/parse/normalize/documents against clearly labelled fixtures.

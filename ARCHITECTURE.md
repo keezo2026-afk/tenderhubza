@@ -60,3 +60,7 @@ All connectors now feed the generic `IngestionEngine`; raw durability, validatio
 Push is data-only: Firebase sends title/body/type/IDs as data, `FirebaseMessagingService` always owns notification construction, and one deep-link path is used for foreground, background and terminated process startup. Delivery tracking is per device. Provider acceptance is `SUBMITTED`; `DELIVERED` is reserved for an external receipt.
 
 SQLAlchemy models are split into `users`, `auth`, `geography`, `sources`, `tenders`, `ingestion`, `saved`, and `notifications`; compatibility exports preserve existing imports and table identity. See [TENDER_IDENTITY.md](TENDER_IDENTITY.md) and [MIGRATIONS.md](MIGRATIONS.md).
+
+## Phase 4 source expansion
+
+Source registry, discovery provenance, connector registration, municipal coverage and connector health are distinct domains. `ConnectorRegistry` maps server-controlled implementation slugs to connector classes. New connectors feed the existing generic ingestion engine and therefore search/notifications without Android changes. Zero results are recorded separately from failure; an unexpected zero after a productive run is a warning and never deletes historical tenders.

@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.api.routes import (
     admin,
+    admin_sources,
     auth,
     geography,
     health,
@@ -25,5 +26,6 @@ for router in [
     sources.router,
     geography.router,
     admin.router,
+    admin_sources.router,
 ]:
     api_router.include_router(router)

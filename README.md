@@ -42,3 +42,7 @@ TenderHub now creates idempotent in-app notifications for deterministic saved-se
 ## Phase 3.5 architecture hardening
 
 Ingestion is connector-neutral, geography resolution is canonical/audited, notification push state is per device, FCM payloads are data-only, read-notification retention is scheduled, saved-search candidates are database-narrowed, and models are split by domain. No Phase 4 connectors or product features were added.
+
+## Phase 4 source expansion platform
+
+Admin-controlled source discovery, approval, connector registration, health, municipal coverage and run monitoring are implemented. Five official-site candidates are documented in `PHASE4_SOURCES.md`; all remain inactive REVIEW/BLOCKED for live verification. No live result is fabricated.

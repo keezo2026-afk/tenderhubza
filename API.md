@@ -87,3 +87,7 @@ Notification and preference queries are always scoped to the access-token user. 
 ## Phase 3.5 delivery semantics
 
 Push channel delivery is expanded into `notification_device_deliveries`. Each device independently transitions through `PENDING`, `SUBMITTED`, `FAILED` or `SKIPPED`; `DELIVERED` is reserved for a future provider receipt. Permanently invalid tokens are deactivated. Retrying a parent delivery skips devices already submitted.
+
+## Phase 4 admin source operations
+
+Admin-only: `GET/POST /admin/sources`, `GET/PUT /admin/sources/{id}`, `GET /admin/sources/{id}/runs`, `GET /admin/sources/{id}/health`, `GET /admin/source-coverage`, and existing `/admin/connector-runs`. Creation always starts in DISCOVERED/REVIEW; activation requires prior approval. URLs must be public HTTPS and do not directly trigger server requests.

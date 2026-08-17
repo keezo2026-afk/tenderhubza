@@ -83,3 +83,7 @@ cd backend
 Phase 3.5 validates both an empty SQLite upgrade and a simulated existing `0006 -> 0007` upgrade. These checks do not validate PostgreSQL GIN/JSON behavior. Configure `NOTIFICATION_READ_RETENTION_DAYS` for the scheduled read-notification cleanup; unread notifications are never removed by retention.
 
 Android push lifecycle tests in `PushLifecycleDeepLinkTest` cover data-payload routing contracts for foreground, background and terminated startup. They are **CREATED BUT NOT EXECUTED** in this environment because JDK/Android SDK/device tooling is unavailable; only a real device/emulator can prove lifecycle delivery.
+
+## Phase 4 candidates
+
+After migrations and geography import, run `python -m app.commands.bootstrap_source_candidates`. This idempotently records five research candidates in REVIEW and activates none. Fixture connector tests prove the platform contract; live source acceptance must be reported separately.

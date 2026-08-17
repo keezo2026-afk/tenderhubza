@@ -27,6 +27,7 @@ from app.models import (
 )
 from app.notifications import NotificationService
 from app.services.geography_resolver import GeographyResolution, GeographyResolver
+from app.sources.health import apply_run_health, classify_failure
 
 log = structlog.get_logger()
 
@@ -91,6 +92,7 @@ class IngestionEngine:
                     await self.connector.normalize(parsed), payload_hash=payload.checksum
                 )
                 run.records_normalized += 1
+                run.documents_discovered += len(normalized.documents)
                 errors = self._validate(normalized)
                 if errors:
                     raise ValueError("; ".join(errors))
@@ -131,6 +133,7 @@ class IngestionEngine:
                 run.records_failed += 1
                 run.error_count += 1
                 run.last_error = str(exc)[:2000]
+                run.error_category = classify_failure(exc)
                 self.db.commit()
                 run_log.warning(
                     "ingestion_item_failed",
@@ -138,7 +141,13 @@ class IngestionEngine:
                     error_type=type(exc).__name__,
                 )
         completed = run.records_inserted + run.records_updated + run.records_skipped
-        status = "SUCCESS" if run.records_failed == 0 else ("PARTIAL" if completed else "FAILED")
+        status = (
+            "SUCCESS_WITH_ZERO_RESULTS"
+            if run.records_failed == 0 and run.records_discovered == 0
+            else "SUCCESS"
+            if run.records_failed == 0
+            else ("PARTIAL" if completed else "FAILED")
+        )
         return self._finish(run, status, None, started, source, high_water_candidate)
 
     def _persist_raw(self, source: Source, payload) -> RawIngestion:
@@ -322,7 +331,8 @@ class IngestionEngine:
         if error:
             run.error_count += 1
             run.last_error = str(error)[:2000]
-        if status == "SUCCESS":
+            run.error_category = classify_failure(error)
+        if status in {"SUCCESS", "SUCCESS_WITH_ZERO_RESULTS"}:
             source.last_successful_run = run.completed_at
             source.last_error = None
             if high_water_candidate is not None:
@@ -335,6 +345,7 @@ class IngestionEngine:
         elif status in {"FAILED", "PARTIAL"}:
             source.last_failed_run = run.completed_at
             source.last_error = run.last_error
+        apply_run_health(self.db, source, run)
         self.db.commit()
         self.db.refresh(run)
         return run
