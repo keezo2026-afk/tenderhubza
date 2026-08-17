@@ -2,6 +2,8 @@
 
 Native Android tender discovery backed by FastAPI, PostgreSQL and a real National Treasury eTender OCDS ingestion path.
 
+For external Windows setup and live acceptance, see [WINDOWS_DEVELOPMENT_SETUP.md](WINDOWS_DEVELOPMENT_SETUP.md).
+
 ## Phase 1 capabilities
 
 - Official OCDS connector with bounded retry and source-specific normalization
