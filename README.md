@@ -1,26 +1,24 @@
 # TenderHub SA
 
-Phase 0 foundation for a native Android South African tender discovery platform backed by a versioned REST API and PostgreSQL.
+Native Android tender discovery backed by FastAPI, PostgreSQL and a real National Treasury eTender OCDS ingestion path.
 
-## Repository
+## Phase 1 capabilities
 
-- `android/` — Kotlin, Jetpack Compose, Navigation, StateFlow, Retrofit and encrypted token storage.
-- `backend/` — FastAPI, SQLAlchemy, Alembic, JWT authentication and connector/ingestion contracts.
-- `docker-compose.yml` — PostgreSQL 16 development service.
-- Documentation: [architecture](ARCHITECTURE.md), [API](API.md), [database](DATABASE.md), [connectors](CONNECTORS.md), [development](DEVELOPMENT.md), [environment](ENVIRONMENT.md), [roadmap](ROADMAP.md).
-
-## Quick start
+- Official OCDS connector with bounded retry and source-specific normalization
+- Raw-first, auditable and idempotent ingestion
+- Connector-run counters and admin monitoring API
+- PostgreSQL generated full-text vector, GIN index, ranking, filtering and server pagination
+- Real Home, Search and Tender Details Compose screens
+- Refresh-token rotation/reuse detection, standardized errors, reset flow and endpoint rate limits
+- Census 2022 district/municipality reference importer with provenance
 
 ```bash
 cp .env.example .env
-make setup
-make db
-make migrate
+make setup db migrate geography
+make ingest
 make api
-# separate shell
-make test
 ```
 
-Open API documentation at `http://localhost:8000/api/docs`. Open `android/` in Android Studio and run an API 26+ emulator; its development URL defaults to `http://10.0.2.2:8000/api/v1/`.
+Open `/api/docs`; run the Android app from `android/` on an API 26+ emulator. See [DEVELOPMENT.md](DEVELOPMENT.md), [ARCHITECTURE.md](ARCHITECTURE.md), [API.md](API.md), [DATABASE.md](DATABASE.md), and [CONNECTORS.md](CONNECTORS.md).
 
-Phase 0 deliberately does **not** implement production tender connectors, search ranking, AI, subscriptions, payments, reset-email delivery, or notifications. Placeholders say **NOT IMPLEMENTED** rather than simulating those capabilities.
+AI/OCR, payments, subscriptions, personalized matching, alerts, broad municipal/SOE connectors, Elasticsearch and analytics remain **NOT IMPLEMENTED**.

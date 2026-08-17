@@ -1,22 +1,41 @@
 # REST API
 
-Base path: `/api/v1`. Interactive OpenAPI: `/api/docs`. Bearer authentication: `Authorization: Bearer <JWT>`.
+Base path `/api/v1`; OpenAPI UI `/api/docs`. Errors always use:
 
-| Method | Path | Access | Status |
-|---|---|---|---|
-| GET | `/health` | Public | Implemented |
-| POST | `/auth/register` | Public | Implemented |
-| POST | `/auth/login` | Public | Implemented |
-| POST | `/auth/logout` | Authenticated | Implemented |
-| GET | `/users/me` | Authenticated | Implemented |
-| GET | `/tenders` | Public | Implemented, basic pagination/filtering |
-| GET | `/tenders/{id}` | Public | Implemented |
-| GET | `/sources` | Public | Implemented |
-| POST | `/sources` | Admin | Implemented |
-| GET | `/provinces` | Public | Implemented |
-| GET | `/municipalities?province_id=` | Public | Implemented |
-| GET | `/admin/health` | Admin | Implemented foundation |
+```json
+{"error":{"code":"VALIDATION_ERROR","message":"Invalid request","details":{}}}
+```
 
-Admin tender creation exists for ingestion/tests but is hidden from the public OpenAPI while the ingestion write contract stabilizes. Pages return `{items,page,page_size,total}`. Validation uses HTTP 422; authentication 401; authorization 403; conflict 409; missing resource 404. Errors contain a machine code and message under FastAPI's `detail` field for handled API errors. A future exception-normalization pass should make validation and handled/unhandled envelopes completely identical.
+## Authentication
 
-Password reset API/email delivery is **NOT IMPLEMENTED**. Search beyond exact Phase 0 filters is **NOT IMPLEMENTED**.
+- `POST /auth/register`
+- `POST /auth/login` — access and opaque refresh token
+- `POST /auth/refresh` — rotates refresh token; reuse revokes its family
+- `POST /auth/logout` — revokes access token and optional refresh family
+- `POST /auth/password-reset/request`
+- `POST /auth/password-reset/confirm`
+- `GET /users/me`
+
+Access tokens are short-lived JWTs. Refresh/reset tokens are stored only as SHA-256 digests. In development, the reset request response includes `development_token`; production never returns it and requires a configured delivery adapter. Authentication endpoints have configurable per-process rate limits. A shared limiter is required before horizontal API scaling.
+
+## Tender discovery
+
+`GET /tenders` supports `q`, `page`, `page_size`, `province_id`, `district_id`, `municipality_id`, `category`, `tender_type`, `status`, `closing_from`, `closing_to`, `issue_from`, `issue_to`, `min_value`, `max_value`, `organisation`, and `sort` (`relevance`, `newest`, `closing_soon`). Pages include `total_pages`. Without an explicit status, closed dates and non-open opportunities are excluded.
+
+- `GET /tenders/home` — deterministic latest, closing-soon and recently-added sections
+- `GET /tenders/{id}` — canonical fields, source attribution and document references
+- `GET /sources`
+- `GET /provinces`
+- `GET /municipalities?province_id=`
+- `GET /health`
+
+Raw payloads and payload hashes are never exposed publicly.
+
+## Admin
+
+Admin bearer token required:
+
+- `POST /sources`
+- `GET /admin/connector-runs`
+- `GET /admin/sources/monitoring`
+- `GET /admin/health`

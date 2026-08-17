@@ -1,0 +1,214 @@
+prov_code,dc_code,muni_code,name,miif_category
+EC,BUF,BUF,Buffalo City,METRO
+EC,DC10,EC101,Dr Beyers Naude,B3
+EC,DC10,EC102,Blue Crane Route,B3
+EC,DC10,EC104,Makana,B2
+EC,DC10,EC105,Ndlambe,B3
+EC,DC10,EC106,Sundays River Valley,B3
+EC,DC10,EC108,Kouga,B3
+EC,DC10,EC109,Kou-Kamma,B3
+EC,DC12,EC121,Mbhashe,B4
+EC,DC12,EC122,Mnquma,B4
+EC,DC12,EC123,Great Kei,B3
+EC,DC12,EC124,Amahlathi,B3
+EC,DC12,EC126,Ngqushwa,B4
+EC,DC12,EC129,Raymond Mhlaba,B3
+EC,DC13,EC131,Inxuba Yethemba,B3
+EC,DC13,EC135,Intsika Yethu,B4
+EC,DC13,EC136,Emalahleni,B4
+EC,DC13,EC137,Engcobo,B4
+EC,DC13,EC138,Sakhisizwe,B3
+EC,DC13,EC139,Enoch Mgijima,B2
+EC,DC14,EC141,Elundini,B4
+EC,DC14,EC142,Senqu,B4
+EC,DC14,EC145,Walter Sisulu,B3
+EC,DC15,EC153,Ngquza Hill,B4
+EC,DC15,EC154,Port St Johns,B4
+EC,DC15,EC155,Nyandeni,B4
+EC,DC15,EC156,Mhlontlo,B4
+EC,DC15,EC157,King Sabata Dalindyebo,B2
+EC,DC44,EC441,Matatiele,B3
+EC,DC44,EC442,Umzimvubu,B4
+EC,DC44,EC443,Winnie Madikizela-Mandela,B4
+EC,DC44,EC444,Ntabankulu,B4
+EC,NMA,NMA,Nelson Mandela Bay,METRO
+FS,DC16,FS161,Letsemeng,B3
+FS,DC16,FS162,Kopanong,B3
+FS,DC16,FS163,Mohokare,B3
+FS,DC18,FS181,Masilonyana,B3
+FS,DC18,FS182,Tokologo,B3
+FS,DC18,FS183,Tswelopele,B3
+FS,DC18,FS184,Matjhabeng,B1
+FS,DC18,FS185,Nala,B3
+FS,DC19,FS191,Setsoto,B3
+FS,DC19,FS192,Dihlabeng,B2
+FS,DC19,FS193,Nketoana,B3
+FS,DC19,FS194,Maluti a Phofung,B3
+FS,DC19,FS195,Phumelela,B3
+FS,DC19,FS196,Mantsopa,B3
+FS,DC20,FS201,Moqhaka,B2
+FS,DC20,FS203,Ngwathe,B3
+FS,DC20,FS204,Metsimaholo,B2
+FS,DC20,FS205,Mafube,B3
+FS,MAN,MAN,Mangaung,METRO
+GP,EKU,EKU,Ekurhuleni,METRO
+GP,DC42,GT421,Emfuleni,B1
+GP,DC42,GT422,Midvaal,B2
+GP,DC42,GT423,Lesedi,B3
+GP,DC48,GT481,Mogale City,B1
+GP,DC48,GT484,Merafong City,B2
+GP,DC48,GT485,Rand West City,B2
+GP,JHB,JHB,City of Johannesburg,METRO
+GP,TSH,TSH,City of Tshwane,METRO
+KZN,ETH,ETH,eThekwini,METRO
+KZN,DC21,KZN212,Umdoni,B2
+KZN,DC21,KZN213,Umzumbe,B4
+KZN,DC21,KZN214,uMuziwabantu,B3
+KZN,DC21,KZN216,Ray Nkonyeni,B2
+KZN,DC22,KZN221,uMshwathi,B4
+KZN,DC22,KZN222,uMngeni,B2
+KZN,DC22,KZN223,Mpofana,B3
+KZN,DC22,KZN224,Impendle,B4
+KZN,DC22,KZN225,The Msunduzi,B1
+KZN,DC22,KZN226,Mkhambathini,B3
+KZN,DC22,KZN227,Richmond,B4
+KZN,DC23,KZN235,Okhahlamba,B4
+KZN,DC23,KZN237,Inkosi Langalibalele,B3
+KZN,DC23,KZN238,Alfred Duma,B2
+KZN,DC24,KZN241,Endumeni,B3
+KZN,DC24,KZN242,Nqutu,B4
+KZN,DC24,KZN244,Msinga,B4
+KZN,DC24,KZN245,Umvoti,B3
+KZN,DC25,KZN252,Newcastle,B1
+KZN,DC25,KZN253,Emadlangeni,B3
+KZN,DC25,KZN254,Dannhauser,B4
+KZN,DC26,KZN261,eDumbe,B3
+KZN,DC26,KZN262,uPhongolo,B4
+KZN,DC26,KZN263,Abaqulusi,B3
+KZN,DC26,KZN265,Nongoma,B4
+KZN,DC26,KZN266,Ulundi,B4
+KZN,DC27,KZN271,Umhlabuyalingana,B4
+KZN,DC27,KZN272,Jozini,B4
+KZN,DC27,KZN275,Mtubatuba,B3
+KZN,DC27,KZN276,Big Five Hlabisa,B3
+KZN,DC28,KZN281,Mfolozi,B4
+KZN,DC28,KZN282,uMhlathuze,B1
+KZN,DC28,KZN284,uMlalazi,B4
+KZN,DC28,KZN285,Mthonjaneni,B3
+KZN,DC28,KZN286,Nkandla,B4
+KZN,DC29,KZN291,Mandeni,B4
+KZN,DC29,KZN292,KwaDukuza,B2
+KZN,DC29,KZN293,Ndwedwe,B4
+KZN,DC29,KZN294,Maphumulo,B4
+KZN,DC43,KZN433,Greater Kokstad,B2
+KZN,DC43,KZN434,Ubuhlebezwe,B4
+KZN,DC43,KZN435,Umzimkhulu,B4
+KZN,DC43,KZN436,Dr Nkosazana Dlamini Zuma,B3
+LP,DC33,LIM331,Greater Giyani,B4
+LP,DC33,LIM332,Greater Letaba,B4
+LP,DC33,LIM333,Greater Tzaneen,B4
+LP,DC33,LIM334,Ba-Phalaborwa,B3
+LP,DC33,LIM335,Maruleng,B4
+LP,DC34,LIM341,Musina,B3
+LP,DC34,LIM343,Thulamela,B4
+LP,DC34,LIM344,Makhado,B4
+LP,DC34,LIM345,Collins Chabane,B4
+LP,DC35,LIM351,Blouberg,B4
+LP,DC35,LIM353,Molemole,B4
+LP,DC35,LIM354,Polokwane,B1
+LP,DC35,LIM355,Lepele-Nkumpi,B4
+LP,DC36,LIM361,Thabazimbi,B3
+LP,DC36,LIM362,Lephalale,B3
+LP,DC36,LIM366,Bela-Bela,B3
+LP,DC36,LIM367,Mogalakwena,B2
+LP,DC36,LIM368,Modimolle-Mookgophong,B3
+LP,DC47,LIM471,Ephraim Mogale,B4
+LP,DC47,LIM472,Elias Motsoaledi,B4
+LP,DC47,LIM473,Makhuduthamaga,B4
+LP,DC47,LIM476,Fetakgomo Tubatse,B4
+MP,DC30,MP301,Chief Albert Luthuli,B4
+MP,DC30,MP302,Msukaligwa,B2
+MP,DC30,MP303,Mkhondo,B3
+MP,DC30,MP304,Dr Pixley Ka Isaka Seme,B3
+MP,DC30,MP305,Lekwa,B3
+MP,DC30,MP306,Dipaleseng,B3
+MP,DC30,MP307,Govan Mbeki,B1
+MP,DC31,MP311,Victor Khanye,B3
+MP,DC31,MP312,Emalahleni,B1
+MP,DC31,MP313,Steve Tshwete,B1
+MP,DC31,MP314,Emakhazeni,B2
+MP,DC31,MP315,Thembisile,B4
+MP,DC31,MP316,Dr JS Moroka,B4
+MP,DC32,MP321,Thaba Chweu,B3
+MP,DC32,MP324,Nkomazi,B4
+MP,DC32,MP325,Bushbuckridge,B4
+MP,DC32,MP326,City of Mbombela,B1
+NC,DC6,NC061,Richtersveld,B3
+NC,DC6,NC062,Nama Khoi,B3
+NC,DC6,NC064,Kamiesberg,B3
+NC,DC6,NC065,Hantam,B3
+NC,DC6,NC066,Karoo Hoogland,B3
+NC,DC6,NC067,Kh+ói-Ma,B3
+NC,DC7,NC071,Ubuntu,B3
+NC,DC7,NC072,Umsobomvu,B3
+NC,DC7,NC073,Emthanjeni,B3
+NC,DC7,NC074,Kareeberg,B3
+NC,DC7,NC075,Renosterberg,B3
+NC,DC7,NC076,Thembelihle,B3
+NC,DC7,NC077,Siyathemba,B3
+NC,DC7,NC078,Siyancuma,B3
+NC,DC8,NC082,Kai !Garib,B3
+NC,DC8,NC084,!Kheis,B3
+NC,DC8,NC085,Tsantsabane,B3
+NC,DC8,NC086,Kgatelopele,B3
+NC,DC8,NC087,Dawid Kruiper,B2
+NC,DC9,NC091,Sol Plaatje,B1
+NC,DC9,NC092,Dikgatlong,B3
+NC,DC9,NC093,Magareng,B3
+NC,DC9,NC094,Phokwane,B3
+NC,DC45,NC451,Joe Morolong,B4
+NC,DC45,NC452,Ga-Segonyana,B3
+NC,DC45,NC453,Gamagara,B3
+NW,DC37,NW371,Moretele,B4
+NW,DC37,NW372,Local Municipality of Madibeng,B1
+NW,DC37,NW373,Rustenburg,B1
+NW,DC37,NW374,Kgetlengrivier,B3
+NW,DC37,NW375,Moses Kotane,B4
+NW,DC38,NW381,Ratlou,B4
+NW,DC38,NW382,Tswaing,B3
+NW,DC38,NW383,Mahikeng,B2
+NW,DC38,NW384,Ditsobotla,B3
+NW,DC38,NW385,Ramotshere Moiloa,B3
+NW,DC39,NW392,Naledi,B3
+NW,DC39,NW393,Mamusa,B3
+NW,DC39,NW394,Greater Taung,B4
+NW,DC39,NW396,Lekwa-Teemane,B3
+NW,DC39,NW397,Kagisano/Molopo,B4
+NW,DC40,NW403,City of Matlosana,B1
+NW,DC40,NW404,Maquassi Hills,B3
+NW,DC40,NW405,JB Marks,B1
+WC,CPT,CPT,City of Cape Town,METRO
+WC,DC1,WC011,Matzikama,B3
+WC,DC1,WC012,Cederberg,B3
+WC,DC1,WC013,Bergrivier,B3
+WC,DC1,WC014,Saldanha Bay,B2
+WC,DC1,WC015,Swartland,B3
+WC,DC2,WC022,Witzenberg,B3
+WC,DC2,WC023,Drakenstein,B1
+WC,DC2,WC024,Stellenbosch,B1
+WC,DC2,WC025,Breede Valley,B2
+WC,DC2,WC026,Langeberg,B3
+WC,DC3,WC031,Theewaterskloof,B3
+WC,DC3,WC032,Overstrand,B2
+WC,DC3,WC033,Cape Agulhas,B3
+WC,DC3,WC034,Swellendam,B3
+WC,DC4,WC041,Kannaland,B3
+WC,DC4,WC042,Hessequa,B3
+WC,DC4,WC043,Mossel Bay,B2
+WC,DC4,WC044,George,B1
+WC,DC4,WC045,Oudtshoorn,B2
+WC,DC4,WC047,Bitou,B3
+WC,DC4,WC048,Knysna,B2
+WC,DC5,WC051,Laingsburg,B3
+WC,DC5,WC052,Prince Albert,B3
+WC,DC5,WC053,Beaufort West,B3

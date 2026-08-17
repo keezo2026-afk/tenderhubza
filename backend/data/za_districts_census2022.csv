@@ -1,0 +1,53 @@
+prov_code,dc_code,name
+EC,BUF,Buffalo City
+EC,DC10,Sarah Baartman
+EC,DC12,Amathole
+EC,DC13,Chris Hani
+EC,DC14,Joe Gqabi
+EC,DC15,O.R.Tambo
+EC,DC44,Alfred Nzo
+EC,NMA,Nelson Mandela Bay
+FS,DC16,Xhariep
+FS,DC18,Lejweleputswa
+FS,DC19,Thabo Mofutsanyane
+FS,DC20,Fezile Dabi
+FS,MAN,Mangaung
+GP,DC42,Sedibeng
+GP,DC48,West Rand
+GP,EKU,Ekurhuleni
+GP,JHB,City of Johannesburg
+GP,TSH,City of Tshwane
+KZN,DC21,Ugu
+KZN,DC22,Umgungundlovu
+KZN,DC23,Uthukela
+KZN,DC24,Umzinyathi
+KZN,DC25,Amajuba
+KZN,DC26,Zululand
+KZN,DC27,Umkhanyakude
+KZN,DC28,King Cetshwayo
+KZN,DC29,iLembe
+KZN,DC43,Harry Gwala
+KZN,ETH,eThekwini
+LP,DC33,Mopani
+LP,DC34,Vhembe
+LP,DC35,Capricorn
+LP,DC36,Waterberg
+LP,DC47,Sekhukhune
+MP,DC30,Gert Sibande
+MP,DC31,Nkangala
+MP,DC32,Ehlanzeni
+NC,DC45,John Taolo Gaetsewe
+NC,DC6,Namakwa
+NC,DC7,Pixley ka Seme
+NC,DC8,Z F Mgcawu
+NC,DC9,Frances Baard
+NW,DC37,Bojanala
+NW,DC38,Ngaka Modiri Molema
+NW,DC39,Dr Ruth Segomotsi Mompati
+NW,DC40,Dr Kenneth Kaunda
+WC,CPT,City of Cape Town
+WC,DC1,West Coast
+WC,DC2,Cape Winelands
+WC,DC3,Overberg
+WC,DC4,Garden Route
+WC,DC5,Central Karoo

@@ -1,0 +1,30 @@
+{
+  "releases": [
+    {
+      "ocid": "ocds-9t57fa-200001",
+      "id": "ocds-9t57fa-200001-2026-08-15",
+      "date": "2026-08-15T08:00:00Z",
+      "buyer": {"name": "KwaZulu-Natal Department of Public Works"},
+      "tender": {
+        "id": "ZNT-CONSTRUCTION-001",
+        "title": "Construction and refurbishment of public facilities",
+        "description": "Building works in the Durban region.",
+        "status": "active",
+        "province": "KwaZulu Natal",
+        "category": "Works",
+        "procurementMethod": "open",
+        "tenderPeriod": {"startDate": "2026-08-15T08:00:00+02:00", "endDate": "2026-09-21T11:00:00+02:00"},
+        "value": {"amount": 1250000, "currency": "ZAR"},
+        "contactPerson": {"name": "Supply Chain", "email": "scm@example.gov.za", "telephoneNumber": "0310000000"},
+        "documents": [{"id": "doc-1", "title": "Bid document", "documentType": "biddingDocuments", "url": "https://www.etenders.gov.za/home/Download?blobName=test.pdf", "format": "application/pdf"}]
+      }
+    },
+    {
+      "ocid": "ocds-9t57fa-200002",
+      "id": "ocds-9t57fa-200002-2026-08-16",
+      "buyer": {"name": "National Treasury"},
+      "tender": {"id": "NT-ICT-002", "title": "Network equipment supply", "status": "active", "province": "Gauteng", "tenderPeriod": {"startDate": "2026-08-16T09:00:00Z", "endDate": "2026-10-01T10:00:00+02:00"}}
+    },
+    {"ocid": "ocds-9t57fa-invalid", "id": "invalid-release", "tender": {"status": "active"}}
+  ]
+}

@@ -1,0 +1,35 @@
+version: 2.1
+jobs:
+  backend:
+    docker:
+      - image: cimg/python:3.11
+      - image: cimg/postgres:16.4
+        environment:
+          POSTGRES_DB: tenderhub_test
+          POSTGRES_USER: tenderhub
+          POSTGRES_PASSWORD: tenderhub_test
+    environment:
+      DATABASE_URL: postgresql+psycopg://tenderhub:tenderhub_test@localhost:5432/tenderhub_test
+      SECRET_KEY: ci-secret-that-is-not-used-in-production-123456
+      ENVIRONMENT: test
+    steps:
+      - checkout
+      - restore_cache: {keys: ["pip-v1-{{ checksum \"backend/requirements.txt\" }}"]}
+      - run: python -m venv .venv && .venv/bin/pip install -r backend/requirements.txt
+      - save_cache: {key: "pip-v1-{{ checksum \"backend/requirements.txt\" }}", paths: ["~/.cache/pip"]}
+      - run: .venv/bin/python -m compileall -q backend/app
+      - run: {name: Migration test, command: cd backend && ../.venv/bin/alembic upgrade head && ../.venv/bin/alembic current}
+      - run: {name: Unit and API tests, command: cd backend && ../.venv/bin/pytest}
+  android:
+    docker:
+      - image: cimg/android:2025.01
+    resource_class: large
+    steps:
+      - checkout
+      - restore_cache: {keys: ["gradle-v1-{{ checksum \"android/app/build.gradle.kts\" }}"]}
+      - run: {name: Android unit tests and debug APK, command: cd android && ./gradlew testDebugUnitTest assembleDebug --stacktrace}
+      - save_cache: {key: "gradle-v1-{{ checksum \"android/app/build.gradle.kts\" }}", paths: ["~/.gradle/caches", "~/.gradle/wrapper"]}
+      - store_artifacts: {path: android/app/build/outputs/apk/debug}
+workflows:
+  phase1-validation:
+    jobs: [backend, android]

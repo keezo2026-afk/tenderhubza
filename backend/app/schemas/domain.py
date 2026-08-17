@@ -20,3 +20,16 @@ class ProvinceOut(BaseModel):
 class MunicipalityOut(BaseModel):
     model_config=ConfigDict(from_attributes=True)
     id:str; province_id:str; district_id:str|None; code:str|None; name:str; municipality_type:str|None; active:bool
+class TenderCard(BaseModel):
+    model_config=ConfigDict(from_attributes=True)
+    id:str;source_reference:str;reference_number:str|None;title:str;organisation:str;province:str|None;municipality:str|None;category:str|None;tender_type:str|None;issue_date:date|None;closing_date:date|None;closing_time:time|None;estimated_value:Decimal|None;currency:str;status:str;created_at:datetime;ingested_at:datetime
+class DocumentOut(BaseModel):
+    model_config=ConfigDict(from_attributes=True)
+    id:str;name:str;source_url:str;mime_type:str|None
+class SourceAttribution(BaseModel):id:str;name:str;organisation:str;website_url:str
+class TenderDetail(TenderOut):
+    source_release_id:str|None;ocds_identifier:str|None;ingested_at:datetime;documents:list[DocumentOut];source:SourceAttribution
+class HomeResponse(BaseModel):latest:list[TenderCard];closing_soon:list[TenderCard];recently_added:list[TenderCard]
+class ConnectorRunOut(BaseModel):
+    model_config=ConfigDict(from_attributes=True)
+    id:str;source_id:str;connector_name:str;connector_version:str;started_at:datetime;completed_at:datetime|None;status:str;records_discovered:int;records_inserted:int;records_updated:int;records_failed:int;last_error:str|None;duration_seconds:Decimal|None

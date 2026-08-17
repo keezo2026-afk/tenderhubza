@@ -1,0 +1,13 @@
+package za.co.tenderhub.ui.screens
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import za.co.tenderhub.data.repository.*
+import za.co.tenderhub.domain.model.*
+sealed interface DataState<out T>{data object Loading:DataState<Nothing>;data class Success<T>(val data:T):DataState<T>;data object Empty:DataState<Nothing>;data class Error(val message:String):DataState<Nothing>}
+class HomeViewModel(private val repo:TenderRepository):ViewModel(){private val _state=MutableStateFlow<DataState<HomeResponse>>(DataState.Loading);val state:StateFlow<DataState<HomeResponse>> =_state;init{load()};fun load()=viewModelScope.launch{_state.value=DataState.Loading;_state.value=when(val r=repo.home()){is ApiResult.Success->if(r.value.latest.isEmpty()&&r.value.closing_soon.isEmpty())DataState.Empty else DataState.Success(r.value);is ApiResult.Error->DataState.Error(r.message)}}}
+data class SearchResults(val items:List<Tender>,val page:Int,val totalPages:Int,val loadingMore:Boolean=false)
+class SearchViewModel(private val repo:TenderRepository):ViewModel(){private val _state=MutableStateFlow<DataState<SearchResults>>(DataState.Empty);val state:StateFlow<DataState<SearchResults>> =_state;var query="";var category="";var sort="relevance";fun search(q:String=query,newCategory:String=category,newSort:String=sort)=viewModelScope.launch{query=q;category=newCategory;sort=newSort;_state.value=DataState.Loading;_state.value=when(val r=repo.search(q,1,null,newCategory.ifBlank{null},newSort)){is ApiResult.Success->if(r.value.items.isEmpty())DataState.Empty else DataState.Success(SearchResults(r.value.items,1,r.value.total_pages));is ApiResult.Error->DataState.Error(r.message)}};fun loadMore()=viewModelScope.launch{val old=(_state.value as? DataState.Success)?.data?:return@launch;if(old.page>=old.totalPages)return@launch;_state.value=DataState.Success(old.copy(loadingMore=true));when(val r=repo.search(query,old.page+1,null,category.ifBlank{null},sort)){is ApiResult.Success->_state.value=DataState.Success(SearchResults(old.items+r.value.items,r.value.page,r.value.total_pages));is ApiResult.Error->_state.value=DataState.Error(r.message)}}}
+class DetailViewModel(private val id:String,private val repo:TenderRepository):ViewModel(){private val _state=MutableStateFlow<DataState<TenderDetail>>(DataState.Loading);val state:StateFlow<DataState<TenderDetail>> =_state;init{load()};fun load()=viewModelScope.launch{_state.value=DataState.Loading;_state.value=when(val r=repo.detail(id)){is ApiResult.Success->DataState.Success(r.value);is ApiResult.Error->DataState.Error(r.message)}}}

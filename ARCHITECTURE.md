@@ -1,22 +1,25 @@
 # Architecture
 
-## Runtime
-
 ```text
-Android (Compose/UDF) -> HTTPS REST /api/v1 -> FastAPI services -> SQLAlchemy -> PostgreSQL
-                                                   |
-Source -> isolated Connector -> raw_ingestions -> normalize/validate/dedupe -> tenders -> future index
-Document URL -> future downloader -> future object storage -> future processors / AI
+National Treasury OCDS API
+  -> ETendersConnector (bounded retry/timeout)
+  -> raw_ingestions COMMIT
+  -> parse / canonical normalize / validate
+  -> (source_id, source_reference) + payload hash
+  -> tender insert | unchanged skip | changed update + source version
+  -> PostgreSQL generated tsvector / GIN
+  -> FastAPI filters, ranked search, home and details
+  -> Retrofit repository / StateFlow ViewModels / Compose
 ```
 
-The Android application is independent of persistence. UI events enter `AuthViewModel`; immutable `StateFlow<AuthState>` drives rendering. `AuthRepository` owns network/session behavior, Retrofit defines contracts, and an OkHttp interceptor supplies bearer tokens from `EncryptedSharedPreferences`.
+## Backend boundaries
 
-Backend routers separate auth, users, tenders, sources, geography and admin boundaries. Dependency injection owns database sessions and role checks. Configuration comes from environment variables. JSON structured request/error logging is enabled.
+Source assumptions live in `connectors/national/etenders`. `ETendersIngestionService` owns raw-first transaction boundaries, validation, idempotency, documents, source versions and connector counters. A command adapter invokes it so a scheduler or queue can be added without changing connector logic. Search is behind `TenderSearch`; production uses PostgreSQL web-search queries and SQLite has a deterministic test-only fallback.
 
-## Security
+FastAPI routers remain separated by auth, users, tenders, geography, sources and admin. Error handlers enforce one public envelope. Passwords use Argon2; access JWTs are short-lived; opaque refresh tokens rotate by family with reuse detection.
 
-Passwords use Argon2 via `pwdlib`; plaintext passwords are never persisted or returned. JWT access tokens expire and logout stores a SHA-256 token digest until expiry. Admin routes enforce the `ADMIN` role. In production use HTTPS, a generated secret, restrictive CORS, secret management and database TLS.
+## Android
 
-## Extension points
+Compose events enter feature ViewModels and immutable `StateFlow` states. `NetworkTenderRepository` is the API abstraction. Home, search and details render only API records with loading, empty, error and retry states. Search is server paginated. OkHttp's authenticator rotates expired tokens once, retries the request, and emits session invalidation on failure. Both tokens use encrypted preferences.
 
-`TenderConnector` isolates each source with `discover`, `fetch`, `parse`, `normalize`, and `download_documents`. `IngestionPipeline` returns source/item failures instead of crashing the whole run. Future queue, scheduler, object-store and search-index adapters belong behind these boundaries. No live connector or worker scheduler is enabled in Phase 0.
+The public details contract includes normalized fields, source attribution, ingestion timestamp and source documents, but never raw payloads.

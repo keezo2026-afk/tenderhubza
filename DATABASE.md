@@ -1,20 +1,24 @@
 # Database
 
-PostgreSQL 16 is the production datastore. Alembic revision `0001` creates the Phase 0 schema and seeds only the nine canonical provinces (reference data, not fake tenders).
+PostgreSQL 16 is the production datastore. Apply Alembic revisions with `make migrate`.
 
-## Tables
+## Phase 1 changes (`0002`)
 
-- Identity: `users`, `profiles`, `businesses`, `revoked_tokens`, `password_reset_tokens`
-- Geography: `provinces`, `districts`, `municipalities`, `municipal_entities`
-- Procurement: `sources`, `tenders`, `raw_ingestions`
-- Prepared extensions: `tender_documents`, `tender_requirements`, `tender_amendments`, `tender_source_versions`, `tender_awards`, `tender_analyses`, `tender_matches`
+- `connector_runs`: run status, timing, counters and isolated failure summary.
+- `tender_duplicate_candidates`: non-destructive cross-source candidate pairs for later review.
+- `refresh_tokens`: hashed rotating tokens, family, replacement, use and revocation state.
+- `geography_datasets`: source URL, version and import timestamp.
+- `raw_ingestions`: request URL/status/content type/response time, checksum, OCDS and release IDs.
+- `tenders`: checksum, release/OCDS identifiers, ingestion timestamp and nullable geographic foreign keys.
+- `tender_source_versions.change_summary`: field-level change audit linked to exact raw input.
+- `districts.dataset_id` and `municipalities.dataset_id`: provenance link.
+- PostgreSQL generated `search_vector` and GIN index, plus current-opportunity sort index.
+- Idempotent National Treasury eTender OCDS source bootstrap.
 
-Tender identity is unique on `(source_id, source_reference)`. Filter-oriented columns are indexed. Raw ingestion stores original URL, identifier, JSON payload, ingestion time, connector version, document references and processing states for traceability.
+Canonical uniqueness remains `(source_id, source_reference)`. Identical checksums skip canonical writes; changed checksums update in place and append a source version. Original payloads are never deleted by ingestion.
 
-```bash
-cd backend
-../.venv/bin/alembic upgrade head
-../.venv/bin/alembic downgrade base # destructive; development only
-```
+## Geography
 
-Business preference fields are preparatory only. AI analysis and matching tables establish ownership/audit boundaries; processing is **NOT IMPLEMENTED**.
+`make geography` imports committed, deterministic Census 2022 administrative reference extracts: 9 provinces already seeded in Phase 0, 52 district/metro geography rows and 213 local/metro municipalities. The source is Statistics South Africa Census 2022 municipal statistics. The importer records provenance and is idempotent. Geographic links on tenders are nullable because national, provincial and public-entity opportunities need not map to municipalities.
+
+The compact CSV extracts contain only codes, hierarchy, names and classification—not census indicators.
