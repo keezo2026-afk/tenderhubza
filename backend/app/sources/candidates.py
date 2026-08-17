@@ -57,3 +57,10 @@ CANDIDATES = [
         "access": "Public page; live structure not verified from this environment",
     },
 ]
+DECISIONS = {
+    "kzn-provincial-treasury": "SOURCE_NOT_FOUND",
+    "ethekwini-municipality": "LIVE_CONNECTOR_FEASIBLE",
+    "msunduzi-municipality": "REQUIRES_MANUAL_CONFIGURATION",
+    "eskom-tender-bulletin": "LIVE_CONNECTOR_FEASIBLE",
+    "sanral-tenders": "ACCESS_RESTRICTED",
+}

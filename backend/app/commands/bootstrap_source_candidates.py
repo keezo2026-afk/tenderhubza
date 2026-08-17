@@ -2,7 +2,7 @@ from sqlalchemy import select
 
 from app.core.database import SessionLocal
 from app.models import Municipality, MunicipalitySourceCoverage, Source, SourceDiscovery
-from app.sources.candidates import CANDIDATES
+from app.sources.candidates import CANDIDATES, DECISIONS
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
                         discovery_method="OFFICIAL_WEBSITE_RESEARCH",
                         evidence_url=data["procurement_url"],
                         notes=f"{data['why']}. {data['access']}",
-                        verification_status="REVIEW",
+                        verification_status=DECISIONS[data["slug"]],
                     )
                 )
             code = {"ethekwini-municipality": "ETH", "msunduzi-municipality": "KZN225"}.get(
