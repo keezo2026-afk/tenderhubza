@@ -12,3 +12,11 @@ data class Document(val id:String,val name:String,val source_url:String,val mime
 data class SourceAttribution(val id:String,val name:String,val organisation:String,val website_url:String)
 data class TenderDetail(val id:String,val source_reference:String,val reference_number:String?,val title:String,val description:String?,val organisation:String,val province:String?,val municipality:String?,val district:String?,val category:String?,val subcategory:String?,val tender_type:String?,val issue_date:String?,val closing_date:String?,val closing_time:String?,val estimated_value:Double?,val currency:String,val source_url:String,val status:String,val contact_name:String?,val contact_email:String?,val contact_phone:String?,val ingested_at:String,val documents:List<Document>,val source:SourceAttribution)
 data class Province(val id:String,val code:String,val name:String)
+data class District(val id:String,val province_id:String,val code:String?,val name:String)
+data class Municipality(val id:String,val province_id:String,val district_id:String?,val code:String?,val name:String,val municipality_type:String?,val active:Boolean)
+data class PasswordResetRequest(val email:String)
+data class PasswordResetRequested(val message:String,val development_token:String?)
+data class PasswordResetConfirm(val token:String,val new_password:String)
+data class TenderFilters(val provinceId:String?=null,val districtId:String?=null,val municipalityId:String?=null,val category:String="",val tenderType:String="",val closingFrom:String="",val closingTo:String="",val issueFrom:String="",val issueTo:String="",val minValue:String="",val maxValue:String="",val status:String=""){
+ fun activeCount()=listOf(provinceId,districtId,municipalityId,category.takeIf{it.isNotBlank()},tenderType.takeIf{it.isNotBlank()},closingFrom.takeIf{it.isNotBlank()},closingTo.takeIf{it.isNotBlank()},issueFrom.takeIf{it.isNotBlank()},issueTo.takeIf{it.isNotBlank()},minValue.takeIf{it.isNotBlank()},maxValue.takeIf{it.isNotBlank()},status.takeIf{it.isNotBlank()}).count{it!=null}
+}

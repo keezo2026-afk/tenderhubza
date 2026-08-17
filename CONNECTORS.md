@@ -33,3 +33,13 @@ discover -> fetch -> INSERT raw_ingestions + COMMIT
 Raw durability occurs before parsing. Every changed canonical record has a source-version row pointing to the exact raw representation and a field-level `change_summary`. Identical payloads create an audit raw record but no duplicate canonical tender/version. One item failure updates that raw record and continues the run.
 
 Document metadata and source URLs are stored without eagerly downloading large files. `download_documents()` is the later download boundary.
+
+## Incremental state and scheduling
+
+Migration `0003` adds `connector_states`. With no explicit `--date-from`, ingestion starts from the last successful high-water date minus the configurable overlap, or from `ETENDERS_INITIAL_SYNC_DAYS` on an initial sync. The watermark advances to the requested end date only when the entire run succeeds; `PARTIAL` and `FAILED` runs never advance it. Discovery follows pages until a short page and fails safely at its page safety limit.
+
+`python -m app.commands.schedule_connectors` is a lightweight, graceful, interval scheduler controlled by `CONNECTOR_SCHEDULE_ENABLED` and `CONNECTOR_SCHEDULE_INTERVAL_MINUTES`. A PostgreSQL advisory lock prevents overlap across processes; a file lock does so in local SQLite tests. Cron may instead invoke the one-shot command. HTTP retries remain bounded inside the connector.
+
+## Connectivity diagnostics
+
+Run `make diagnose`. It separately measures DNS, TCP and verified TLS negotiation and never disables certificate verification. `connector_request_failed` logs host, category, attempt, error type and HTTP status without query payloads or credentials. Typical categories are `dns`, `tcp_connect`, `timeout`, `certificate_verification`, `tls_negotiation`, `upstream_http`, and `transport`.

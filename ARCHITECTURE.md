@@ -23,3 +23,11 @@ FastAPI routers remain separated by auth, users, tenders, geography, sources and
 Compose events enter feature ViewModels and immutable `StateFlow` states. `NetworkTenderRepository` is the API abstraction. Home, search and details render only API records with loading, empty, error and retry states. Search is server paginated. OkHttp's authenticator rotates expired tokens once, retries the request, and emits session invalidation on failure. Both tokens use encrypted preferences.
 
 The public details contract includes normalized fields, source attribution, ingestion timestamp and source documents, but never raw payloads.
+
+## Phase 1A operational controls
+
+Incremental ingestion uses a successful-run high-water date with a configurable overlap. PostgreSQL advisory locking guarantees one active eTender run across scheduler and cron processes. Watermark advancement is in the final successful transaction only. The scheduler handles SIGTERM/SIGINT and waits with an interruptible interval.
+
+`RateLimiter` is a replaceable protocol. Its current implementation is explicitly **NOT SAFE FOR HORIZONTAL SCALING**; deploy one API process or add a shared implementation in a later authorized phase.
+
+Password delivery uses `EmailProvider` with development and SMTP implementations. External OCDS document references are accepted only as valid HTTPS URLs, stored as inert metadata and opened by Android's external URI handler; the backend does not download or execute them.

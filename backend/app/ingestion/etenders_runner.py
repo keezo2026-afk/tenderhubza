@@ -7,15 +7,15 @@ from sqlalchemy.orm import Session
 import structlog
 from app.connectors.national.etenders import ETendersConnector
 from app.ingestion.contracts import NormalizedTender
-from app.models import ConnectorRun,Province,RawIngestion,Source,Tender,TenderDocument,TenderDuplicateCandidate,TenderSourceVersion
+from app.models import ConnectorRun,ConnectorState,Province,RawIngestion,Source,Tender,TenderDocument,TenderDuplicateCandidate,TenderSourceVersion
 log=structlog.get_logger()
 class ETendersIngestionService:
  def __init__(self,db:Session,connector:ETendersConnector):self.db=db;self.connector=connector
- async def run(self,source:Source)->ConnectorRun:
+ async def run(self,source:Source,high_water_candidate=None)->ConnectorRun:
   run=ConnectorRun(source_id=source.id,connector_name=self.connector.NAME,connector_version=self.connector.VERSION);self.db.add(run);self.db.commit();started=time.monotonic()
   try:
    items=list(await self.connector.discover());run.records_discovered=len(items);self.db.commit()
-  except Exception as exc:return self._finish(run,"FAILED",exc,started,source)
+  except Exception as exc:return self._finish(run,"FAILED",exc,started,source,high_water_candidate)
   for item in items:
    raw=None
    try:
@@ -37,7 +37,7 @@ class ETendersIngestionService:
      raw=self.db.get(RawIngestion,raw.id);raw.normalization_status="FAILED";raw.processing_status="FAILED";raw.error=str(exc)[:2000]
     run.records_failed+=1;run.error_count+=1;run.last_error=str(exc)[:2000];self.db.commit();log.warning("ingestion_item_failed",source_identifier=item.source_identifier,error=type(exc).__name__)
   status="SUCCESS" if run.records_failed==0 else ("PARTIAL" if run.records_inserted+run.records_updated+run.records_skipped else "FAILED")
-  return self._finish(run,status,None,started,source)
+  return self._finish(run,status,None,started,source,high_water_candidate)
  def _validate(self,t:NormalizedTender)->list[str]:
   errors=[]
   if not t.source_reference or len(t.source_reference)>255:errors.append("valid source reference is required")
@@ -65,9 +65,12 @@ class ETendersIngestionService:
    candidate=self.db.scalar(select(Tender).where(Tender.source_id!=source.id,Tender.reference_number==tender.reference_number,Tender.organisation==tender.organisation).limit(1))
    if candidate:self.db.add(TenderDuplicateCandidate(tender_id=tender.id,candidate_tender_id=candidate.id,reason="same reference number and organisation across sources"))
   self.db.flush();return action
- def _finish(self,run,status,error,started,source):
+ def _finish(self,run,status,error,started,source,high_water_candidate=None):
   run=self.db.get(ConnectorRun,run.id);run.status=status;run.completed_at=datetime.now(timezone.utc);run.duration_seconds=Decimal(str(round(time.monotonic()-started,3)))
   if error:run.error_count+=1;run.last_error=str(error)[:2000]
-  if status=="SUCCESS":source.last_successful_run=run.completed_at;source.last_error=None
+  if status=="SUCCESS":
+   source.last_successful_run=run.completed_at;source.last_error=None
+   if high_water_candidate is not None:
+    state=self.db.get(ConnectorState,source.id) or ConnectorState(source_id=source.id);state.high_water_date=high_water_candidate;state.last_run_id=run.id;self.db.add(state)
   elif status in ("FAILED","PARTIAL"):source.last_failed_run=run.completed_at;source.last_error=run.last_error
   self.db.commit();self.db.refresh(run);return run

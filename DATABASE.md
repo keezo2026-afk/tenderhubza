@@ -22,3 +22,9 @@ Canonical uniqueness remains `(source_id, source_reference)`. Identical checksum
 `make geography` imports committed, deterministic Census 2022 administrative reference extracts: 9 provinces already seeded in Phase 0, 52 district/metro geography rows and 213 local/metro municipalities. The original source is Stats SA’s *Census 2022 Provinces at a Glance*. The committed compact CSVs are independently processed extracts from `afrith/census-2022-muni-stats` (Tabula plus manual cleanup), and Stats SA is acknowledged as the original source. The importer records provenance and is idempotent. Geographic links on tenders are nullable because national, provincial and public-entity opportunities need not map to municipalities.
 
 The compact CSV extracts contain only codes, hierarchy, names and classification—not census indicators.
+
+## Phase 1A migration (`0003`)
+
+`connector_states` stores the source high-water date and successful run reference. It is deliberately separate from run history. A failed or partial run leaves this row unchanged.
+
+After PostgreSQL migration and geography import, run `make verify-postgres`. The command refuses SQLite and reports PostgreSQL version, required tables, `search_vector` type, GIN index definition, registered source, geography counts, search timing and `EXPLAIN (ANALYZE, BUFFERS)` output.

@@ -1,4 +1,4 @@
-.PHONY: setup db migrate geography ingest api test android-test
+.PHONY: setup db migrate geography ingest diagnose schedule verify-postgres api test android-test
 setup:
 	python3 -m venv .venv && .venv/bin/pip install -r backend/requirements.txt
 db:
@@ -9,6 +9,12 @@ geography:
 	cd backend && ../.venv/bin/python -m app.commands.import_geography
 ingest:
 	cd backend && ../.venv/bin/python -m app.commands.ingest_etenders
+diagnose:
+	cd backend && ../.venv/bin/python -m app.commands.diagnose_etenders
+schedule:
+	cd backend && ../.venv/bin/python -m app.commands.schedule_connectors
+verify-postgres:
+	cd backend && ../.venv/bin/python -m app.commands.verify_postgres
 api:
 	cd backend && ../.venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 test:

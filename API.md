@@ -39,3 +39,10 @@ Admin bearer token required:
 - `GET /admin/connector-runs`
 - `GET /admin/sources/monitoring`
 - `GET /admin/health`
+
+## Phase 1A additions
+
+- `GET /districts?province_id=` provides backend-owned district reference data.
+- `GET /admin/data-quality` reports source health, tender ingestion windows, 30-day processing totals, duplicate candidates and discovered documents.
+
+Password-reset requests always return the same generic message. In development only, the development adapter can return the one-time token to support local Android testing. `MAIL_ADAPTER=smtp` uses environment-configured SMTP behind `EmailProvider`; auth business logic has no vendor dependency.

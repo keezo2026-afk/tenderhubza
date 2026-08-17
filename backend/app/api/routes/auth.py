@@ -13,6 +13,7 @@ from app.core.security import create_access_token,create_opaque_token,hash_passw
 from app.models import PasswordResetToken,Profile,RefreshToken,RevokedToken,User
 from app.schemas.auth import *
 from app.schemas.domain import UserOut
+from app.services.email import email_provider
 router=APIRouter(prefix="/auth",tags=["auth"])
 def _tokens(db,user,family_id=None)->TokenResponse:
  settings=get_settings();access,access_exp=create_access_token(user.id,user.role);refresh=create_opaque_token();refresh_exp=datetime.now(timezone.utc)+timedelta(days=settings.refresh_token_expire_days);db.add(RefreshToken(digest=token_digest(refresh),user_id=user.id,family_id=family_id or str(uuid4()),expires_at=refresh_exp));db.commit();return TokenResponse(access_token=access,refresh_token=refresh,access_expires_at=access_exp.isoformat(),refresh_expires_at=refresh_exp.isoformat())
@@ -50,10 +51,10 @@ def logout(data:LogoutRequest|None=None,credentials=Depends(bearer),user:User=De
   if record:db.execute(update(RefreshToken).where(RefreshToken.family_id==record.family_id).values(revoked_at=datetime.now(timezone.utc)))
  db.commit()
 @router.post("/password-reset/request",response_model=PasswordResetRequested)
-def request_reset(data:PasswordResetRequest,request:Request,db:Session=Depends(get_db)):
+async def request_reset(data:PasswordResetRequest,request:Request,db:Session=Depends(get_db)):
  settings=get_settings();limit(request,"password-reset",settings.auth_rate_limit_per_minute);user=db.scalar(select(User).where(User.email==data.email.lower()));token=None
  if user:
-  token=create_opaque_token();db.add(PasswordResetToken(digest=token_digest(token),user_id=user.id,expires_at=datetime.now(timezone.utc)+timedelta(minutes=settings.password_reset_expire_minutes)));db.commit()
+  token=create_opaque_token();db.add(PasswordResetToken(digest=token_digest(token),user_id=user.id,expires_at=datetime.now(timezone.utc)+timedelta(minutes=settings.password_reset_expire_minutes)));db.commit();reset_url=f"{settings.public_app_url}?token={token}";await email_provider(settings).send_password_reset(user.email,reset_url)
  return PasswordResetRequested(development_token=token if settings.environment=="development" and settings.mail_adapter=="development" else None)
 @router.post("/password-reset/confirm",status_code=204)
 def confirm_reset(data:PasswordResetConfirm,request:Request,db:Session=Depends(get_db)):

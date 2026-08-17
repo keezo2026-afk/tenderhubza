@@ -88,3 +88,10 @@ class GeographyDataset(Base):
 class TenderDuplicateCandidate(TimestampMixin,Base):
     __tablename__="tender_duplicate_candidates";__table_args__=(UniqueConstraint("tender_id","candidate_tender_id",name="uq_tender_duplicate_pair"),)
     id: Mapped[str]=mapped_column(String(36),primary_key=True,default=uid);tender_id: Mapped[str]=mapped_column(ForeignKey("tenders.id",ondelete="CASCADE"),index=True);candidate_tender_id: Mapped[str]=mapped_column(ForeignKey("tenders.id",ondelete="CASCADE"),index=True);reason: Mapped[str]=mapped_column(String(255));status: Mapped[str]=mapped_column(String(20),default="PENDING")
+class ConnectorState(Base):
+    __tablename__="connector_states"
+    source_id: Mapped[str]=mapped_column(ForeignKey("sources.id",ondelete="CASCADE"),primary_key=True)
+    high_water_date: Mapped[date|None]=mapped_column(Date)
+    high_water_release_id: Mapped[str|None]=mapped_column(String(255))
+    last_run_id: Mapped[str|None]=mapped_column(ForeignKey("connector_runs.id"))
+    updated_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),server_default=func.now(),onupdate=func.now())

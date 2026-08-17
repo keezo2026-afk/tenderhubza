@@ -18,7 +18,23 @@ jobs:
       - run: python -m venv .venv && .venv/bin/pip install -r backend/requirements.txt
       - save_cache: {key: "pip-v1-{{ checksum \"backend/requirements.txt\" }}", paths: ["~/.cache/pip"]}
       - run: .venv/bin/python -m compileall -q backend/app
+      - run:
+          name: Wait for PostgreSQL
+          command: |
+            .venv/bin/python - <<'PY'
+            import time
+            import psycopg
+            for attempt in range(30):
+                try:
+                    psycopg.connect("dbname=tenderhub_test user=tenderhub password=tenderhub_test host=localhost").close()
+                    break
+                except psycopg.OperationalError:
+                    time.sleep(1)
+            else:
+                raise SystemExit("PostgreSQL did not become ready")
+            PY
       - run: {name: Migration test, command: cd backend && ../.venv/bin/alembic upgrade head && ../.venv/bin/alembic current}
+      - run: {name: Geography and PostgreSQL search verification, command: cd backend && ../.venv/bin/python -m app.commands.import_geography && ../.venv/bin/python -m app.commands.verify_postgres}
       - run: {name: Unit and API tests, command: cd backend && ../.venv/bin/pytest}
   android:
     docker:

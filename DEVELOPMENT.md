@@ -27,3 +27,30 @@ The ingestion command accepts `--date-from`, `--date-to`, `--page`, and `--page-
 ## Test fixtures
 
 `backend/tests/fixtures/etenders_releases.json` is deterministic OCDS-shaped test input only. It is not loaded by migrations, development startup, the Android app, or production ingestion.
+
+## Phase 1A acceptance commands
+
+```bash
+docker compose up -d postgres
+make migrate
+make geography
+make verify-postgres
+make diagnose
+make ingest
+make ingest                  # identical window via explicit date args for repeat proof
+```
+
+For scheduled execution set `CONNECTOR_SCHEDULE_ENABLED=true` and run `make schedule` under a process supervisor. For cron, leave the embedded scheduler disabled and invoke `make ingest`; the advisory lock prevents overlap.
+
+If eTender discovery fails, capture the UTC timestamp, `make diagnose` JSON and connector run ID. DNS success plus TCP success plus TLS EOF indicates remote/network-path TLS closure—not an HTTP API response. Do not disable verification.
+
+Android validation requires JDK 17, Android SDK 35 and Gradle wrapper access:
+
+```bash
+cd android
+./gradlew testDebugUnitTest assembleDebug
+# emulator attached:
+./gradlew connectedDebugAndroidTest
+```
+
+Expected APK: `android/app/build/outputs/apk/debug/app-debug.apk`.

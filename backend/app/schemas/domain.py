@@ -17,6 +17,9 @@ class SourceOut(SourceCreate):
 class ProvinceOut(BaseModel):
     model_config=ConfigDict(from_attributes=True)
     id:str; code:str; name:str
+class DistrictOut(BaseModel):
+    model_config=ConfigDict(from_attributes=True)
+    id:str;province_id:str;code:str|None;name:str
 class MunicipalityOut(BaseModel):
     model_config=ConfigDict(from_attributes=True)
     id:str; province_id:str; district_id:str|None; code:str|None; name:str; municipality_type:str|None; active:bool

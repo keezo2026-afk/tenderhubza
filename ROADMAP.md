@@ -15,3 +15,7 @@ National Treasury OCDS connector, raw-first ingestion, idempotency/versioning, r
 7. Introduce document download/object storage with malware and size controls—without AI analysis yet.
 
 AI Tender Reader, OCR/LLM analysis, matching, subscriptions, payments, semantic search and Elasticsearch are **NOT IMPLEMENTED**.
+
+## Phase 1A acceptance gate
+
+No later product phase should begin until a PostgreSQL 16 environment has produced a successful real eTender run, identical repeat, GIN search evidence, passing Android APK build and passing CI. External connectivity or unavailable build infrastructure must remain a reported blocker rather than being replaced with fixtures.

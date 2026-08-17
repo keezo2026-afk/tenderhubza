@@ -14,6 +14,17 @@ class Settings(BaseSettings):
     connector_timeout_seconds: float = 30
     connector_max_attempts: int = 3
     etenders_page_size: int = 100
+    etenders_initial_sync_days: int = 30
+    etenders_overlap_days: int = 1
+    connector_schedule_enabled: bool = False
+    connector_schedule_interval_minutes: int = 60
+    public_app_url: str = "tenderhub://reset-password"
+    smtp_host: str | None = None
+    smtp_port: int = 587
+    smtp_username: str | None = None
+    smtp_password: str | None = None
+    smtp_from_email: str | None = None
+    smtp_starttls: bool = True
     mail_adapter: str = "development"
     cors_origins: str = "http://localhost:3000"
     log_level: str = "INFO"

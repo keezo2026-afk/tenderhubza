@@ -9,7 +9,7 @@ from app.core.errors import ApiError
 from app.core.rate_limit import InMemoryRateLimiter
 from app.ingestion.contracts import DiscoveredItem,RawPayload
 from app.ingestion.etenders_runner import ETendersIngestionService
-from app.models import ConnectorRun,GeographyDataset,PasswordResetToken,Province,RawIngestion,RefreshToken,Source,Tender,TenderDocument,TenderSourceVersion
+from app.models import ConnectorRun,ConnectorState,GeographyDataset,PasswordResetToken,Province,RawIngestion,RefreshToken,Source,Tender,TenderDocument,TenderDuplicateCandidate,TenderSourceVersion
 from app.services.geography_import import import_census_geography
 FIXTURE=json.loads((Path(__file__).parent/"fixtures/etenders_releases.json").read_text())["releases"]
 class FixtureConnector(ETendersConnector):
@@ -21,13 +21,14 @@ def source(db):
  item=Source(name="National Treasury eTender OCDS",source_type="NATIONAL",organisation="National Treasury",website_url="https://www.etenders.gov.za",api_url="https://ocds-api.etenders.gov.za/api/OCDSReleases",connector_type="ETENDERS_OCDS",polling_frequency="daily");db.add(item);db.add(Province(code="KZN",name="KwaZulu-Natal"));db.commit();return item
 @pytest.mark.asyncio
 async def test_raw_first_insert_duplicate_update_and_failure_isolation(db):
- src=source(db);run=await ETendersIngestionService(db,FixtureConnector(FIXTURE)).run(src)
+ src=source(db);run=await ETendersIngestionService(db,FixtureConnector(FIXTURE)).run(src,high_water_candidate=date(2026,8,17));assert db.get(ConnectorState,src.id) is None
  assert (run.status,run.records_discovered,run.records_inserted,run.records_failed)==("PARTIAL",3,2,1)
  assert db.scalar(select(func.count()).select_from(RawIngestion))==3
  assert db.scalar(select(func.count()).select_from(Tender))==2
  first=db.scalar(select(Tender).where(Tender.source_reference=="ocds-9t57fa-200001"));assert first.province=="KwaZulu-Natal";assert first.province_id is not None
  assert db.scalar(select(func.count()).select_from(TenderDocument))==1
- second=await ETendersIngestionService(db,FixtureConnector(FIXTURE[:2])).run(src);assert second.records_skipped==2;assert db.scalar(select(func.count()).select_from(Tender))==2
+ other=Source(name="Deterministic second source",source_type="OTHER",organisation="Second registry",website_url="https://second.example.org",connector_type="TEST_SECOND",polling_frequency="manual");db.add(other);db.commit();cross=await ETendersIngestionService(db,FixtureConnector([FIXTURE[0]])).run(other);assert cross.records_inserted==1;assert db.scalar(select(func.count()).select_from(TenderDuplicateCandidate))==1
+ second=await ETendersIngestionService(db,FixtureConnector(FIXTURE[:2])).run(src,high_water_candidate=date(2026,8,17));assert second.records_skipped==2;assert db.scalar(select(func.count()).select_from(Tender))==3;assert db.get(ConnectorState,src.id).high_water_date==date(2026,8,17)
  changed=copy.deepcopy(FIXTURE[0]);changed["tender"]["title"]="Updated construction and refurbishment";changed["tender"]["tenderPeriod"]["endDate"]="2026-09-28T11:00:00+02:00"
  third=await ETendersIngestionService(db,FixtureConnector([changed])).run(src);assert third.records_updated==1;db.refresh(first);assert first.closing_date==date(2026,9,28)
  versions=list(db.scalars(select(TenderSourceVersion).where(TenderSourceVersion.tender_id==first.id)));assert len(versions)==2;assert "closing_date" in versions[-1].change_summary
@@ -53,6 +54,11 @@ def test_refresh_rotation_reuse_detection_and_password_reset(client,user_payload
  reset=client.post("/api/v1/auth/password-reset/request",json={"email":user_payload["email"]});assert reset.status_code==200;token=reset.json()["development_token"];assert token
  assert client.post("/api/v1/auth/password-reset/confirm",json={"token":token,"new_password":"DifferentPass123!"}).status_code==204
  assert client.post("/api/v1/auth/login",json={"email":user_payload["email"],"password":"DifferentPass123!"}).status_code==200
+def test_admin_data_quality_is_protected_and_reports_counts(client,db):
+ assert client.get("/api/v1/admin/data-quality").status_code==401
+ from app.core.security import hash_password
+ from app.models import User
+ admin=User(email="quality-admin@example.co.za",password_hash=hash_password("AdminPass123!"),first_name="Quality",last_name="Admin",role="ADMIN");db.add(admin);db.commit();token=client.post("/api/v1/auth/login",json={"email":admin.email,"password":"AdminPass123!"}).json()["access_token"];response=client.get("/api/v1/admin/data-quality",headers={"Authorization":f"Bearer {token}"});assert response.status_code==200;assert set(response.json())>={"sources","tender_ingestion","processing_last_30_days","duplicates","documents"}
 def test_rate_limiter_blocks_excess_attempts():
  rate=InMemoryRateLimiter();rate.check("login:test",1)
  with pytest.raises(ApiError) as exc:rate.check("login:test",1)

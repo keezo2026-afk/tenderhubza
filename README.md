@@ -22,3 +22,7 @@ make api
 Open `/api/docs`; run the Android app from `android/` on an API 26+ emulator. See [DEVELOPMENT.md](DEVELOPMENT.md), [ARCHITECTURE.md](ARCHITECTURE.md), [API.md](API.md), [DATABASE.md](DATABASE.md), and [CONNECTORS.md](CONNECTORS.md).
 
 AI/OCR, payments, subscriptions, personalized matching, alerts, broad municipal/SOE connectors, Elasticsearch and analytics remain **NOT IMPLEMENTED**.
+
+## Production acceptance
+
+Phase 1A adds incremental watermarks, non-overlapping scheduling, network diagnostics, PostgreSQL verification, Android password reset/filter UX, and data-quality monitoring. Run `make verify-postgres` only against PostgreSQL 16; fixture/SQLite success is not live acceptance. See `DEVELOPMENT.md` for the exact sequence, `CONNECTORS.md` for TLS troubleshooting, and `SECURITY_REVIEW.md` for the focused audit.
