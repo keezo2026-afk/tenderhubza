@@ -2,7 +2,7 @@ from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
 from uuid import uuid4
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, JSON, Numeric, String, Text, Time, UniqueConstraint, func
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Index, JSON, Numeric, String, Text, Time, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
@@ -101,7 +101,7 @@ class SavedTender(TimestampMixin,Base):
     user_id:Mapped[str]=mapped_column(ForeignKey("users.id",ondelete="CASCADE"),index=True)
     tender_id:Mapped[str]=mapped_column(ForeignKey("tenders.id",ondelete="CASCADE"),index=True)
 class SavedSearch(TimestampMixin,Base):
-    __tablename__="saved_searches"
+    __tablename__="saved_searches";__table_args__=(Index("ix_saved_searches_user_created","user_id","created_at"),)
     id:Mapped[str]=mapped_column(String(36),primary_key=True,default=uid)
     user_id:Mapped[str]=mapped_column(ForeignKey("users.id",ondelete="CASCADE"),index=True)
     name:Mapped[str]=mapped_column(String(120));query:Mapped[str]=mapped_column(String(200),default="")
