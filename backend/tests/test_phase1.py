@@ -255,6 +255,28 @@ def test_error_envelope(client):
     assert set(response.json()["error"]) == {"code", "message", "details"}
 
 
+def test_relevance_pagination_has_deterministic_tie_breaker(client, db):
+    src = source(db)
+    for index in range(45):
+        db.add(
+            Tender(
+                source_id=src.id,
+                source_reference=f"tie-{index}",
+                title="Construction opportunity",
+                organisation="Public Works",
+                source_url=f"https://example.org/tie/{index}",
+                status="OPEN",
+                closing_date=date(2026, 9, 30),
+            )
+        )
+    db.commit()
+    first = client.get("/api/v1/tenders?q=construction&page=1&page_size=20").json()
+    second = client.get("/api/v1/tenders?q=construction&page=2&page_size=20").json()
+    assert {item["id"] for item in first["items"]}.isdisjoint(
+        {item["id"] for item in second["items"]}
+    )
+
+
 def test_authoritative_geography_import_is_idempotent(db):
     for code, name in [
         ("EC", "Eastern Cape"),

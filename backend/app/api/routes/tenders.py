@@ -110,16 +110,22 @@ def list_tenders(
     base, rank = search.apply(base, q, db.bind.dialect.name)
     count = select(func.count()).select_from(base.order_by(None).subquery())
     if sort == "newest":
-        base = base.order_by(Tender.issue_date.desc().nullslast(), Tender.created_at.desc())
+        base = base.order_by(
+            Tender.issue_date.desc().nullslast(), Tender.created_at.desc(), Tender.id
+        )
     elif sort == "closing_soon":
         base = base.order_by(
-            Tender.closing_date.asc().nullslast(), Tender.issue_date.desc().nullslast()
+            Tender.closing_date.asc().nullslast(),
+            Tender.issue_date.desc().nullslast(),
+            Tender.id,
         )
     elif rank is not None:
-        base = base.order_by(rank.desc(), Tender.closing_date.asc().nullslast())
+        base = base.order_by(rank.desc(), Tender.closing_date.asc().nullslast(), Tender.id)
     else:
         base = base.order_by(
-            Tender.closing_date.asc().nullslast(), Tender.issue_date.desc().nullslast()
+            Tender.closing_date.asc().nullslast(),
+            Tender.issue_date.desc().nullslast(),
+            Tender.id,
         )
     total = db.scalar(count) or 0
     items = list(db.scalars(base.offset((page - 1) * page_size).limit(page_size)).all())

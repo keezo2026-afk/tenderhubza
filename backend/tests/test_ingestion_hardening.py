@@ -47,7 +47,7 @@ async def test_generic_engine_resolves_geography_and_preserves_raw_first(db):
         province_id=province.id,
         district_id=district.id,
         code="KZN225",
-        name="Msunduzi",
+        name="The Msunduzi",
     )
     source = Source(
         name="Generic engine source",

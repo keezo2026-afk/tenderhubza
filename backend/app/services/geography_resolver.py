@@ -74,6 +74,7 @@ class GeographyResolver:
         "ethekwini metropolitan": "eThekwini",
         "city of ethekwini": "eThekwini",
         "umgungundlovu district": "uMgungundlovu",
+        "msunduzi": "The Msunduzi",
     }
 
     def __init__(self, db: Session, aliases: dict[str, str] | None = None):

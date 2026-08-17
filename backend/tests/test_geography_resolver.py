@@ -15,7 +15,7 @@ def geography(db):
         province_id=kzn.id,
         district_id=umgungundlovu.id,
         code="KZN225",
-        name="Msunduzi",
+        name="The Msunduzi",
     )
     ethekwini = Municipality(
         province_id=kzn.id,
