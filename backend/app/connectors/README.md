@@ -1,0 +1,1 @@
+Implement one `TenderConnector` per source in the matching source-type directory. A connector failure is returned as an item-level `PipelineResult`; it does not terminate other sources. No live connector is enabled in Phase 0.
