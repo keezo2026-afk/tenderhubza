@@ -22,3 +22,7 @@ Reviewed on 2026-08-17.
 - SMTP transport and certificate behavior must be validated in the deployment environment. Provider credentials must remain in its secret manager.
 - Android uses an alpha/deprecated encrypted-preferences dependency inherited from Phase 0; migration to the current Android credential guidance should be planned after the verified APK baseline.
 - A production penetration test, dependency vulnerability scan, Android signing configuration and TLS termination review have not been performed in this sandbox.
+
+## Phase 2 ownership review
+
+Saved-tender and saved-search routes derive ownership solely from the authenticated user dependency. Every read/update/delete query includes `user_id`; another user's existing resource returns the same 404 as a missing resource. Foreign keys cascade intentionally and duplicate saves are database-constrained. Batch saved-state input is limited to 100 tender IDs.

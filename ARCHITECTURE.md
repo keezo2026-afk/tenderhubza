@@ -31,3 +31,9 @@ Incremental ingestion uses a successful-run high-water date with a configurable 
 `RateLimiter` is a replaceable protocol. Its current implementation is explicitly **NOT SAFE FOR HORIZONTAL SCALING**; deploy one API process or add a shared implementation in a later authorized phase.
 
 Password delivery uses `EmailProvider` with development and SMTP implementations. External OCDS document references are accepted only as valid HTTPS URLs, stored as inert metadata and opened by Android's external URI handler; the backend does not download or execute them.
+
+## Phase 2 personal state
+
+`SavedRepository` is the single Android save-state authority. It batches server state for visible tender IDs and changes its `StateFlow` only after save/unsave API confirmation, keeping Home, Search, Saved and Details consistent. Saved resources remain server-side across logout, restart and device changes.
+
+Saved searches use structured backend validation and reconstruct `TenderFilters` in the retained Search ViewModel. Recent keyword history is device-local, capped at ten and never sent to the backend except when the user executes that search.

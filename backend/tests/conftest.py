@@ -13,6 +13,8 @@ engine=create_engine("sqlite+pysqlite:///:memory:",connect_args={"check_same_thr
 TestingSession=sessionmaker(bind=engine,expire_on_commit=False)
 @pytest.fixture(autouse=True)
 def database():
+    from app.core.rate_limit import limiter
+    if hasattr(limiter,"_events"): limiter._events.clear()
     Base.metadata.create_all(engine); yield; Base.metadata.drop_all(engine)
 @pytest.fixture
 def db():

@@ -54,3 +54,9 @@ cd android
 ```
 
 Expected APK: `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+## Phase 2 verification
+
+Migration `0004` creates saved tenders/searches. Backend tests exercise duplicate save, unsave, pagination, unauthenticated access, cross-user isolation, saved-search CRUD and profile updates.
+
+Android tests for saved rendering, empty state, filters and local history are under `androidTest`/`test`. JDK/SDK availability is still required to execute them and build the APK.

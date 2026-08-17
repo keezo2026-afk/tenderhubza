@@ -1,0 +1,13 @@
+package za.co.tenderhub.data.repository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import za.co.tenderhub.data.remote.TenderHubApi
+import za.co.tenderhub.domain.model.*
+interface SavedRepository{val savedIds:StateFlow<Set<String>>;fun clear();suspend fun refreshStates(ids:List<String>):ApiResult<Set<String>>;suspend fun setSaved(id:String,saved:Boolean):ApiResult<Boolean>;suspend fun list(page:Int):ApiResult<Page<SavedTenderItem>>;suspend fun searches(page:Int=1):ApiResult<Page<SavedSearch>>;suspend fun createSearch(input:SavedSearchInput):ApiResult<SavedSearch>;suspend fun updateSearch(id:String,input:SavedSearchInput):ApiResult<SavedSearch>;suspend fun deleteSearch(id:String):ApiResult<Unit>}
+class NetworkSavedRepository(private val api:TenderHubApi):SavedRepository{
+ private val _savedIds=MutableStateFlow<Set<String>>(emptySet());override val savedIds:StateFlow<Set<String>> =_savedIds;override fun clear(){_savedIds.value=emptySet()}
+ override suspend fun refreshStates(ids:List<String>):ApiResult<Set<String>>{if(ids.isEmpty())return ApiResult.Success(_savedIds.value);return when(val result=apiCall{api.savedStates(TenderIdsRequest(ids.distinct().take(100)))}){is ApiResult.Success->{val remote=result.value.filter{it.saved}.map{it.tender_id}.toSet();_savedIds.value=(_savedIds.value-ids.toSet())+remote;ApiResult.Success(_savedIds.value)};is ApiResult.Error->result}}
+ override suspend fun setSaved(id:String,saved:Boolean):ApiResult<Boolean>{val result=if(saved)apiCall{api.saveTender(id).saved}else apiCall{api.unsaveTender(id);false};return when(result){is ApiResult.Success->{_savedIds.value=if(saved)_savedIds.value+id else _savedIds.value-id;ApiResult.Success(saved)};is ApiResult.Error->result}}
+ override suspend fun list(page:Int)=apiCall{api.savedTenders(page)}
+ override suspend fun searches(page:Int)=apiCall{api.searches(page)};override suspend fun createSearch(input:SavedSearchInput)=apiCall{api.createSearch(input)};override suspend fun updateSearch(id:String,input:SavedSearchInput)=apiCall{api.updateSearch(id,input)};override suspend fun deleteSearch(id:String)=apiCall{api.deleteSearch(id)}
+}

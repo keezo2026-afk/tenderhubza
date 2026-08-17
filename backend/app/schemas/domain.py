@@ -36,3 +36,18 @@ class HomeResponse(BaseModel):latest:list[TenderCard];closing_soon:list[TenderCa
 class ConnectorRunOut(BaseModel):
     model_config=ConfigDict(from_attributes=True)
     id:str;source_id:str;connector_name:str;connector_version:str;started_at:datetime;completed_at:datetime|None;status:str;records_discovered:int;records_inserted:int;records_updated:int;records_failed:int;last_error:str|None;duration_seconds:Decimal|None
+class SavedTenderItem(BaseModel):
+    saved_at:datetime;tender:TenderCard
+class TenderIdsRequest(BaseModel):tender_ids:list[str]=Field(min_length=1,max_length=100)
+class TenderSavedState(BaseModel):tender_id:str;saved:bool
+class SavedSearchFilters(BaseModel):
+    provinceId:str|None=None;districtId:str|None=None;municipalityId:str|None=None;category:str="";tenderType:str="";organisation:str="";closingFrom:str="";closingTo:str="";issueFrom:str="";issueTo:str="";minValue:str="";maxValue:str="";status:str=""
+class SavedSearchInput(BaseModel):
+    name:str=Field(min_length=1,max_length=120);query:str=Field(default="",max_length=200);filters:SavedSearchFilters=Field(default_factory=SavedSearchFilters);sort:str=Field(default="relevance",pattern="^(relevance|newest|closing_soon)$")
+class SavedSearchOut(SavedSearchInput):
+    model_config=ConfigDict(from_attributes=True)
+    id:str;created_at:datetime;updated_at:datetime
+class ProfileOut(BaseModel):
+    id:str;email:str;first_name:str;last_name:str;phone:str|None;display_name:str|None;province:str|None;city:str|None
+class ProfileUpdate(BaseModel):
+    first_name:str=Field(min_length=1,max_length=100);last_name:str=Field(min_length=1,max_length=100);phone:str|None=Field(default=None,max_length=30);province:str|None=Field(default=None,max_length=100);city:str|None=Field(default=None,max_length=100)

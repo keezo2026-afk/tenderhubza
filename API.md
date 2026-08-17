@@ -46,3 +46,28 @@ Admin bearer token required:
 - `GET /admin/data-quality` reports source health, tender ingestion windows, 30-day processing totals, duplicate candidates and discovered documents.
 
 Password-reset requests always return the same generic message. In development only, the development adapter can return the one-time token to support local Android testing. `MAIL_ADAPTER=smtp` uses environment-configured SMTP behind `EmailProvider`; auth business logic has no vendor dependency.
+
+## Phase 2 personal discovery
+
+Authenticated saved-tender endpoints:
+
+- `POST /tenders/{id}/save`
+- `DELETE /tenders/{id}/save`
+- `GET /tenders/{id}/saved`
+- `POST /users/me/saved-tender-status` (batch, maximum 100 IDs)
+- `GET /users/me/saved-tenders?page=&page_size=`
+
+Authenticated saved-search CRUD:
+
+- `POST /searches`
+- `GET /searches?page=&page_size=`
+- `GET /searches/{id}`
+- `PUT /searches/{id}`
+- `DELETE /searches/{id}`
+
+Profile:
+
+- `GET /users/me/profile`
+- `PUT /users/me/profile`
+
+All ownership comes from the access token. Client-supplied user IDs are never accepted. Duplicate saves are idempotent and database-constrained.

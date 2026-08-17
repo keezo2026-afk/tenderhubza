@@ -26,3 +26,9 @@ AI/OCR, payments, subscriptions, personalized matching, alerts, broad municipal/
 ## Production acceptance
 
 Phase 1A adds incremental watermarks, non-overlapping scheduling, network diagnostics, PostgreSQL verification, Android password reset/filter UX, and data-quality monitoring. Run `make verify-postgres` only against PostgreSQL 16; fixture/SQLite success is not live acceptance. See `DEVELOPMENT.md` for the exact sequence, `CONNECTORS.md` for TLS troubleshooting, and `SECURITY_REVIEW.md` for the focused audit.
+
+## Phase 2 discovery
+
+Authenticated users can save/unsave real tenders, browse paginated saved tenders, create/run/rename/delete saved searches, retain a search session, keep ten local recent searches, and edit their profile. Home/Search/Details share confirmed server save state. No fake production tender records are introduced.
+
+**Phase 1A Live Acceptance: BLOCKED** — the documented National Treasury TLS and environment gate remains unresolved.

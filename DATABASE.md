@@ -28,3 +28,8 @@ The compact CSV extracts contain only codes, hierarchy, names and classification
 `connector_states` stores the source high-water date and successful run reference. It is deliberately separate from run history. A failed or partial run leaves this row unchanged.
 
 After PostgreSQL migration and geography import, run `make verify-postgres`. The command refuses SQLite and reports PostgreSQL version, required tables, `search_vector` type, GIN index definition, registered source, geography counts, search timing and `EXPLAIN (ANALYZE, BUFFERS)` output.
+
+## Phase 2 migration (`0004`)
+
+- `saved_tenders`: server-persisted user/tender association with cascade deletion, indexed `user_id` and `tender_id`, and unique `(user_id, tender_id)`.
+- `saved_searches`: user-owned name, query, structured JSON filters, sort, timestamps, and indexed `user_id`. Structured filter validation mirrors the discovery API and is suitable for future notification matching without implementing notifications now.

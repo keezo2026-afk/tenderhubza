@@ -17,6 +17,13 @@ data class Municipality(val id:String,val province_id:String,val district_id:Str
 data class PasswordResetRequest(val email:String)
 data class PasswordResetRequested(val message:String,val development_token:String?)
 data class PasswordResetConfirm(val token:String,val new_password:String)
-data class TenderFilters(val provinceId:String?=null,val districtId:String?=null,val municipalityId:String?=null,val category:String="",val tenderType:String="",val closingFrom:String="",val closingTo:String="",val issueFrom:String="",val issueTo:String="",val minValue:String="",val maxValue:String="",val status:String=""){
- fun activeCount()=listOf(provinceId,districtId,municipalityId,category.takeIf{it.isNotBlank()},tenderType.takeIf{it.isNotBlank()},closingFrom.takeIf{it.isNotBlank()},closingTo.takeIf{it.isNotBlank()},issueFrom.takeIf{it.isNotBlank()},issueTo.takeIf{it.isNotBlank()},minValue.takeIf{it.isNotBlank()},maxValue.takeIf{it.isNotBlank()},status.takeIf{it.isNotBlank()}).count{it!=null}
+data class TenderFilters(val provinceId:String?=null,val districtId:String?=null,val municipalityId:String?=null,val category:String="",val tenderType:String="",val organisation:String="",val closingFrom:String="",val closingTo:String="",val issueFrom:String="",val issueTo:String="",val minValue:String="",val maxValue:String="",val status:String=""){
+ fun activeCount()=listOf(provinceId,districtId,municipalityId,category.takeIf{it.isNotBlank()},tenderType.takeIf{it.isNotBlank()},organisation.takeIf{it.isNotBlank()},closingFrom.takeIf{it.isNotBlank()},closingTo.takeIf{it.isNotBlank()},issueFrom.takeIf{it.isNotBlank()},issueTo.takeIf{it.isNotBlank()},minValue.takeIf{it.isNotBlank()},maxValue.takeIf{it.isNotBlank()},status.takeIf{it.isNotBlank()}).count{it!=null}
 }
+data class TenderSavedState(val tender_id:String,val saved:Boolean)
+data class TenderIdsRequest(val tender_ids:List<String>)
+data class SavedTenderItem(val saved_at:String,val tender:Tender)
+data class SavedSearchInput(val name:String,val query:String,val filters:Map<String,Any?>,val sort:String)
+data class SavedSearch(val id:String,val name:String,val query:String,val filters:Map<String,Any?>,val sort:String,val created_at:String,val updated_at:String)
+data class Profile(val id:String,val email:String,val first_name:String,val last_name:String,val phone:String?,val display_name:String?,val province:String?,val city:String?)
+data class ProfileUpdate(val first_name:String,val last_name:String,val phone:String?,val province:String?,val city:String?)

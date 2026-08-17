@@ -95,3 +95,14 @@ class ConnectorState(Base):
     high_water_release_id: Mapped[str|None]=mapped_column(String(255))
     last_run_id: Mapped[str|None]=mapped_column(ForeignKey("connector_runs.id"))
     updated_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),server_default=func.now(),onupdate=func.now())
+class SavedTender(TimestampMixin,Base):
+    __tablename__="saved_tenders";__table_args__=(UniqueConstraint("user_id","tender_id",name="uq_saved_tender_user_tender"),)
+    id:Mapped[str]=mapped_column(String(36),primary_key=True,default=uid)
+    user_id:Mapped[str]=mapped_column(ForeignKey("users.id",ondelete="CASCADE"),index=True)
+    tender_id:Mapped[str]=mapped_column(ForeignKey("tenders.id",ondelete="CASCADE"),index=True)
+class SavedSearch(TimestampMixin,Base):
+    __tablename__="saved_searches"
+    id:Mapped[str]=mapped_column(String(36),primary_key=True,default=uid)
+    user_id:Mapped[str]=mapped_column(ForeignKey("users.id",ondelete="CASCADE"),index=True)
+    name:Mapped[str]=mapped_column(String(120));query:Mapped[str]=mapped_column(String(200),default="")
+    filters:Mapped[dict]=mapped_column(JSON,default=dict);sort:Mapped[str]=mapped_column(String(30),default="relevance")
