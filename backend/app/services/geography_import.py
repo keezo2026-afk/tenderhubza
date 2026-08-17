@@ -3,8 +3,8 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.models import District,GeographyDataset,Municipality,Province
-SOURCE="Statistics South Africa Census 2022 municipal statistics"
-SOURCE_URL="https://www.statssa.gov.za/?p=18624"
+SOURCE="Statistics South Africa Census 2022 (independently extracted by afrith)"
+SOURCE_URL="https://census.statssa.gov.za/assets/documents/2022/Provinces_at_a_Glance.pdf"
 VERSION="Census 2022 municipal boundaries"
 def import_census_geography(db:Session,data_dir:Path|None=None)->dict:
  data_dir=data_dir or Path(__file__).parents[2]/"data";existing=db.scalar(select(GeographyDataset).where(GeographyDataset.version==VERSION))

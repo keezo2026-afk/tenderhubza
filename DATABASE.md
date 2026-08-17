@@ -19,6 +19,6 @@ Canonical uniqueness remains `(source_id, source_reference)`. Identical checksum
 
 ## Geography
 
-`make geography` imports committed, deterministic Census 2022 administrative reference extracts: 9 provinces already seeded in Phase 0, 52 district/metro geography rows and 213 local/metro municipalities. The source is Statistics South Africa Census 2022 municipal statistics. The importer records provenance and is idempotent. Geographic links on tenders are nullable because national, provincial and public-entity opportunities need not map to municipalities.
+`make geography` imports committed, deterministic Census 2022 administrative reference extracts: 9 provinces already seeded in Phase 0, 52 district/metro geography rows and 213 local/metro municipalities. The original source is Stats SA’s *Census 2022 Provinces at a Glance*. The committed compact CSVs are independently processed extracts from `afrith/census-2022-muni-stats` (Tabula plus manual cleanup), and Stats SA is acknowledged as the original source. The importer records provenance and is idempotent. Geographic links on tenders are nullable because national, provincial and public-entity opportunities need not map to municipalities.
 
 The compact CSV extracts contain only codes, hierarchy, names and classification—not census indicators.
