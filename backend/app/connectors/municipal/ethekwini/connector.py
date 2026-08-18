@@ -16,9 +16,9 @@ class EThekwiniConnector(TenderConnector):
         supports_documents=True, supports_updates=True, supports_html=True
     )
 
-    def __init__(self, limit=25, client=None):
+    def __init__(self, limit=25, client=None, resolver=None, max_redirects=5):
         self.limit = min(limit, 25)
-        self.http = BoundedHtmlClient(client=client)
+        self.http = BoundedHtmlClient(client=client, resolver=resolver, max_redirects=max_redirects)
         self._listing = None
 
     async def discover(self):

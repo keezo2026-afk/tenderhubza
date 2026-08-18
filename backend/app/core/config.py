@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     auth_rate_limit_per_minute: int = 10
     connector_timeout_seconds: float = 30
     connector_max_attempts: int = 3
+    connector_max_redirects: int = Field(default=5, ge=0, le=10)
     etenders_page_size: int = 100
     etenders_initial_sync_days: int = 30
     etenders_overlap_days: int = 1

@@ -5,7 +5,7 @@ import structlog
 
 from app.core.config import get_settings
 from app.core.database import SessionLocal
-from app.services.connector_execution import ConnectorAlreadyRunning, execute_etenders
+from app.services.connector_scheduler import run_due_connectors
 
 log = structlog.get_logger()
 
@@ -25,19 +25,11 @@ async def scheduler():
     while not stop.is_set():
         try:
             with SessionLocal() as db:
-                run = await execute_etenders(db)
+                results = await run_due_connectors(db)
                 log.info(
-                    "scheduled_connector_completed",
-                    run_id=run.id,
-                    status=run.status,
-                    discovered=run.records_discovered,
-                    inserted=run.records_inserted,
-                    updated=run.records_updated,
-                    skipped=run.records_skipped,
-                    failed=run.records_failed,
+                    "scheduled_connector_cycle_completed",
+                    results=[result.__dict__ for result in results],
                 )
-        except ConnectorAlreadyRunning:
-            log.info("scheduled_connector_skipped", reason="already_running")
         except Exception as exc:
             log.exception("scheduled_connector_failed", error_type=type(exc).__name__)
         try:

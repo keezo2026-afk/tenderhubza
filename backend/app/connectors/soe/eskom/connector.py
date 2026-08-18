@@ -21,10 +21,10 @@ class EskomConnector(TenderConnector):
         supports_api=True,
     )
 
-    def __init__(self, page_size=10, page_number=1, client=None):
+    def __init__(self, page_size=10, page_number=1, client=None, resolver=None, max_redirects=5):
         self.page_size = min(page_size, 25)
         self.page_number = page_number
-        self.http = BoundedHtmlClient(client=client)
+        self.http = BoundedHtmlClient(client=client, resolver=resolver, max_redirects=max_redirects)
 
     async def discover(self):
         url = f"{self.BASE}/?pageSize={self.page_size}&pageNumber={self.page_number}"

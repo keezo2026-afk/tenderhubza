@@ -87,3 +87,7 @@ Android push lifecycle tests in `PushLifecycleDeepLinkTest` cover data-payload r
 ## Phase 4 candidates
 
 After migrations and geography import, run `python -m app.commands.bootstrap_source_candidates`. This idempotently records five research candidates in REVIEW and activates none. Fixture connector tests prove the platform contract; live source acceptance must be reported separately.
+
+## Scheduler and SSRF validation
+
+`python -m app.commands.schedule_connectors` now executes all due, active, approved connector registrations rather than only National Treasury. Set `CONNECTOR_SCHEDULE_ENABLED=true` under a process supervisor. Run `pytest tests/test_outbound_security.py tests/test_scheduler_hardening.py tests/test_scheduler_failed_watermark.py` for redirect/DNS/concurrency/failure tests. The redirect limit defaults to five and may be configured from 0–10 with `CONNECTOR_MAX_REDIRECTS`.

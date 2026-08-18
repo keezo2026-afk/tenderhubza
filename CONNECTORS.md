@@ -55,3 +55,9 @@ After an inserted canonical tender is flushed, ingestion evaluates enabled saved
 ## Phase 4 registration and health
 
 A connector implementation is server-registered with version, type, capabilities and implementation reference. Source lifecycle is DISCOVERED → REVIEW → APPROVED → ACTIVE, with PAUSED/FAILING/BLOCKED/RETIRED operational states. Failure categories and stale thresholds are standardized. `ConnectorContractHarness` exercises discover/fetch/parse/normalize/documents against clearly labelled fixtures.
+
+## Phase 5D outbound and scheduling hardening
+
+All connector HTTP redirects are followed manually, at most five times. The initial URL and every `Location` must be HTTPS, have a non-internal hostname, and resolve exclusively to globally routable addresses; mixed public/private DNS answers are rejected. Certificate verification remains enabled.
+
+The scheduler loads only ACTIVE sources with ACTIVE connector registrations, resolves executable code through the trusted application registry (National Treasury, eThekwini, Eskom), checks polling due time, acquires the existing per-source advisory lock, and executes `IngestionEngine`. Database implementation-reference strings are never imported. Unknown, disabled, blocked, unconfigured and not-due sources are skipped/rejected independently.

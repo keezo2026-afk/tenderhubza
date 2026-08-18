@@ -11,6 +11,7 @@ FAILURES = {
     "ReadTimeout": "TIMEOUT",
     "PermanentSourceError": "SCHEMA_CHANGE",
     "JSONDecodeError": "PARSE_FAILURE",
+    "OutboundSecurityError": "ACCESS_RESTRICTION",
 }
 
 

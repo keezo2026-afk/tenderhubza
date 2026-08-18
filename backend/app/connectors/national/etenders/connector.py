@@ -10,6 +10,7 @@ import httpx
 import structlog
 
 from app.connectors.base import ConnectorCapabilities, TenderConnector
+from app.connectors.outbound import OutboundUrlPolicy, SecureRedirectClient
 from app.ingestion.contracts import DiscoveredItem, DocumentReference, NormalizedTender, RawPayload
 
 log = structlog.get_logger()
@@ -43,6 +44,8 @@ class ETendersConnector(TenderConnector):
         max_attempts: int = 3,
         client: httpx.AsyncClient | None = None,
         max_pages: int = 100,
+        resolver=None,
+        max_redirects: int = 5,
     ):
         self.page_number = page_number
         self.page_size = min(page_size, 1000)
@@ -52,6 +55,8 @@ class ETendersConnector(TenderConnector):
         self.max_attempts = max_attempts
         self._client = client
         self.max_pages = max_pages
+        self.url_policy = OutboundUrlPolicy(resolver)
+        self.max_redirects = max_redirects
 
     async def _request(self, url: str, params: dict | None = None) -> httpx.Response:
         own = self._client is None
@@ -62,7 +67,9 @@ class ETendersConnector(TenderConnector):
         try:
             for attempt in range(1, self.max_attempts + 1):
                 try:
-                    response = await client.get(url, params=params)
+                    response = await SecureRedirectClient(
+                        client, self.url_policy, self.max_redirects
+                    ).get(url, params=params)
                     if response.status_code in (408, 429) or response.status_code >= 500:
                         raise httpx.HTTPStatusError(
                             "transient upstream response",

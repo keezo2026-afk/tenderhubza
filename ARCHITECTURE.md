@@ -64,3 +64,7 @@ SQLAlchemy models are split into `users`, `auth`, `geography`, `sources`, `tende
 ## Phase 4 source expansion
 
 Source registry, discovery provenance, connector registration, municipal coverage and connector health are distinct domains. `ConnectorRegistry` maps server-controlled implementation slugs to connector classes. New connectors feed the existing generic ingestion engine and therefore search/notifications without Android changes. Zero results are recorded separately from failure; an unexpected zero after a productive run is a warning and never deletes historical tenders.
+
+## Phase 5D trust boundaries
+
+Outbound source fetching uses `OutboundUrlPolicy` plus `SecureRedirectClient`; DNS is revalidated before every redirect hop and any private/special result rejects the request. Redirects are limited to five (`CONNECTOR_MAX_REDIRECTS`). Scheduler configuration is data-driven, but connector execution is code-approved through `ConnectorRegistry`; no database-controlled dynamic import exists. Connector failures are isolated within a scheduler cycle.
